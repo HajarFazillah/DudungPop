@@ -5,7 +5,7 @@ export default class CollectionPopup {
     this.scene = scene;
     this.popupContainer = null;
 
-    this.detailContainer = null;   // fixed yellow card
+    this.detailContainer = null;   // fixed yellow card (item tab)
     this.scrollContainer = null;   // scrollable list / grid
 
     this.scrollY = 0;
@@ -17,29 +17,39 @@ export default class CollectionPopup {
 
     this.itemsData = this.generateTestData();
 
-    this.visibleHeight = 550;
-    this.itemHeight = 80;
-    this.tabHeight = 40;
-    this.extraTopSpace = 30;
-    this.listWidth = 440;
-    this.listBgWidth = 400;
-    this.popupWidth = 500;
-    this.popupHeight = 700;
+    this.visibleHeight   = 550;
+    this.itemHeight      = 80;
+    this.tabHeight       = 40;
+    this.extraTopSpace   = 30;
+    this.listWidth       = 440;
+    this.listBgWidth     = 400;
+    this.popupWidth      = 500;
+    this.popupHeight     = 700;
   }
+
+  // IMPORTANT:
+  // Make sure your Scene.preload has something like:
+  //
+  // this.load.image('pentagon_on',    'assets/pentagon_on.png');
+  // this.load.image('pentagon_off',   'assets/pentagon_off.png');
+  // this.load.image('pentagon_lock',  'assets/pentagon_lock.png');
+  // this.load.image('chat_icon',      'assets/chat_icon.png'); // optional
+  //
+  // You can change the keys below if your art uses different names.
 
   generateTestData() {
     const base = [
-      { name: '토토의 기다림', status: [true, true, true, true], locked: false },
+      { name: '토토의 기다림', status: [true, true, true, true],  locked: false },
       { name: '토토의 기다림', status: [true, true, true, false], locked: false },
-      { name: '토토의 기다림', status: [true, true, true, true], locked: false },
+      { name: '토토의 기다림', status: [true, true, true, true],  locked: false },
       { name: '이름이름이름이름', status: [true, true, false, false], locked: false },
       { name: '이름이름이름이름', status: [true, false, false, false], locked: false },
-      { name: '이름이름이름이름', status: [false, false, false, false], locked: true },
-      { name: '이름이름이름이름', status: [false, false, false, false], locked: true },
-      { name: '이름이름이름이름', status: [false, false, false, false], locked: true },
-      { name: '이름이름이름이름', status: [false, false, false, false], locked: true },
-      { name: '이름이름이름이름', status: [false, false, false, false], locked: true },
-      { name: '이름이름이름이름', status: [true, true, false, false], locked: false },
+      { name: '이름이름이름이름', status: [false, false, false, false], locked: true  },
+      { name: '이름이름이름이름', status: [false, false, false, false], locked: true  },
+      { name: '이름이름이름이름', status: [false, false, false, false], locked: true  },
+      { name: '이름이름이름이름', status: [false, false, false, false], locked: true  },
+      { name: '이름이름이름이름', status: [false, false, false, false], locked: true  },
+      { name: '이름이름이름이름', status: [true, true, false, false],  locked: false },
       { name: '이름이름이름이름', status: [true, false, false, false], locked: false }
     ];
     // plenty of items to scroll through
@@ -51,12 +61,11 @@ export default class CollectionPopup {
     const centerX = scene.cameras.main.centerX;
     const centerY = scene.cameras.main.centerY;
 
-    // Main popup container
     this.popupContainer = scene.add.container(0, 0);
     this.popupContainer.setVisible(false);
     this.popupContainer.setDepth(999);
 
-    // Overlay
+    // Background overlay (dim)
     const overlay = scene.add.rectangle(
       centerX,
       centerY,
@@ -66,31 +75,52 @@ export default class CollectionPopup {
       0.5
     ).setInteractive();
 
-    // Popup box
+    // Main popup box (grey, like your mock)
     const box = scene.add.rectangle(
       centerX,
       centerY,
       this.popupWidth,
       this.popupHeight,
+      0x7f7f7f
+    ).setStrokeStyle(2, 0x000000);
+
+    const popupLeft   = centerX - this.popupWidth  / 2;
+    const popupTop    = centerY - this.popupHeight / 2;
+    const popupRight  = centerX + this.popupWidth  / 2;
+    const popupBottom = centerY + this.popupHeight / 2;
+
+    // Top-right "4 / 12" bubble (roughly matching mock)
+    const counterBg = scene.add.rectangle(
+      popupRight - 60,
+      popupTop + 30,
+      90,
+      32,
       0xf5f5f5
     ).setStrokeStyle(2, 0x000000);
 
-    // Close button
-    const xBtnSize = 48;
-    const xBtn = scene.add.text(
-      centerX + this.popupWidth / 2 - xBtnSize,
-      centerY - this.popupHeight / 2 + xBtnSize,
-      'X',
-      { fontSize: '28px', fontStyle: 'bold', color: '#91131a', fontFamily: 'Arial' }
-    ).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    xBtn.on('pointerover', () => xBtn.setColor('#fa5555'));
-    xBtn.on('pointerout',  () => xBtn.setColor('#91131a'));
-    xBtn.on('pointerdown', () => this.hidePopup());
+    const counterText = scene.add.text(
+      counterBg.x -5,
+      counterBg.y,
+      '4 / 12',
+      { fontSize: '16px', color: '#000', fontFamily: 'Arial' }
+    ).setOrigin(0, 0.5);
 
-    // Tabs
-    const tabLeft    = centerX - (this.popupWidth / 2) + 80;
-    const tabSpacing = 110;
-    const tabY       = centerY - (this.popupHeight / 2) + this.tabHeight / 2 + 25;
+    // Optional chat icon on left side of that bubble
+    let chatIcon;
+    if (scene.textures.exists('chat_icon')) {
+      chatIcon = scene.add.image(counterBg.x - 20, counterBg.y, 'chat_icon')
+        .setOrigin(0.5)
+        .setDisplaySize(20, 20);
+    } else {
+      // fallback: simple box icon
+      chatIcon = scene.add.rectangle(counterBg.x - 30, counterBg.y, 16, 14, 0xffffff)
+        .setStrokeStyle(2, 0x000000);
+    }
+
+    // Tabs (스토리 / 아이템)
+    const tabLeft    = popupLeft + 80;
+    const tabSpacing = 120;
+    const tabY       = popupTop + this.tabHeight / 2 + 25;
 
     const tabs = [
       { key: 'story', label: '스토리', x: tabLeft },
@@ -103,9 +133,14 @@ export default class CollectionPopup {
     tabs.forEach(tab => {
       const isSelected = tab.key === this.selectedTab;
 
-      const btn = scene.add.rectangle(tab.x, tabY, 100, this.tabHeight,
-        isSelected ? 0x999999 : 0xcccccc
-      ).setInteractive({ useHandCursor: true });
+      const btn = scene.add.rectangle(
+        tab.x,
+        tabY,
+        110,
+        this.tabHeight,
+        isSelected ? 0x444444 : 0xcccccc
+      ).setStrokeStyle(0.5, 0x000000)
+       .setInteractive({ useHandCursor: true });
 
       btn.on('pointerdown', () => {
         this.selectedTab = tab.key;
@@ -116,14 +151,15 @@ export default class CollectionPopup {
       this.tabButtons.push(btn);
 
       const txt = scene.add.text(tab.x, tabY, tab.label, {
-        fontSize: '18px',
-        color: isSelected ? '#fff' : '#000'
+        fontSize: '20px',
+        color: isSelected ? '#ffffff' : '#000000',
+        fontFamily: 'Arial'
       }).setOrigin(0.5);
 
       this.tabTexts.push(txt);
     });
 
-    // List / mask area (below tabs)
+    // Scrollable grey list area (below tabs)
     const maskTopY = tabY + (this.tabHeight / 2) + this.extraTopSpace;
 
     this.listMaskArea = scene.add.rectangle(
@@ -131,12 +167,12 @@ export default class CollectionPopup {
       maskTopY + this.visibleHeight / 2,
       this.listWidth,
       this.visibleHeight,
-      0xdddddd
-    ).setStrokeStyle(1, 0x000000);
+      0xb0b0b0
+    ).setStrokeStyle(0.5, 0x000000);
 
-    // Containers for partition
-    this.detailContainer = scene.add.container(0, 0);   // fixed yellow card
-    this.scrollContainer = scene.add.container(0, 0);   // scrollable items
+    // Containers
+    this.detailContainer = scene.add.container(0, 0);   // fixed card (item tab)
+    this.scrollContainer = scene.add.container(0, 0);   // scrollable content
 
     // Mask only for scrollContainer
     const maskGfx = scene.make.graphics({});
@@ -145,7 +181,7 @@ export default class CollectionPopup {
     const mask = maskGfx.createGeometryMask();
     this.scrollContainer.setMask(mask);
 
-    // Scroll bounds and starting Y (for story list & grid area)
+    // Scroll bounds
     this.itemsStartY = maskTopY + this.itemHeight / 2;
     this.scrollBounds = { min: 0, max: 0 };
     this.scrollY = 0;
@@ -157,18 +193,54 @@ export default class CollectionPopup {
       this.updateScroll();
     });
 
+    // --- Bottom-left rounded-square red "X" button ---
+    const exitContainer = scene.add.container(
+      popupLeft + 45,            // padding from left
+      popupBottom - 35           // padding from bottom
+    );
+
+    // draw a rounded square with Graphics so we can have radius
+    const exitGfx = scene.add.graphics();
+    exitGfx.fillStyle(0xff0000, 1);
+    exitGfx.fillRoundedRect(-18, -18, 30, 30, 10);  // centered around (0,0)
+
+    const exitText = scene.add.text(-2, -2, 'X', {
+      fontSize: '22px',
+      fontStyle: 'bold',
+      color: '#000000',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5);
+
+    exitContainer.add([exitGfx, exitText]);
+
+    // make the whole container interactive
+    exitContainer.setSize(30, 30);
+    exitContainer.setInteractive(
+      new Phaser.Geom.Rectangle(-18, -18, 30, 30),
+      Phaser.Geom.Rectangle.Contains
+    ).on('pointerdown', () => this.hidePopup())
+     .on('pointerover', () => exitGfx.clear()
+       .fillStyle(0xff4444, 1)
+       .fillRoundedRect(-18, -18, 30, 30, 10))
+     .on('pointerout', () => exitGfx.clear()
+       .fillStyle(0xff0000, 1)
+       .fillRoundedRect(-18, -18, 30, 30, 10));
+
     this.popupContainer.add([
       overlay,
       box,
-      xBtn,
+      counterBg,
+      chatIcon,
+      counterText,
       ...this.tabButtons,
       ...this.tabTexts,
       this.listMaskArea,
       this.detailContainer,
-      this.scrollContainer
+      this.scrollContainer,
+      exitContainer
     ]);
 
-    scene.add.existing(this.popupContainer);
+    this.scene.add.existing(this.popupContainer);
     this.refreshList();
   }
 
@@ -176,8 +248,9 @@ export default class CollectionPopup {
     for (let i = 0; i < this.tabButtons.length; i++) {
       const key = (i === 0) ? 'story' : 'item';
       const isSelected = this.selectedTab === key;
-      this.tabButtons[i].fillColor = isSelected ? 0x999999 : 0xcccccc;
-      this.tabTexts[i].setColor(isSelected ? '#fff' : '#000');
+      this.tabButtons[i].fillColor = isSelected ? 0x444444 : 0xcccccc;
+      this.tabButtons[i].setStrokeStyle(0.5, 0x000000);
+      this.tabTexts[i].setColor(isSelected ? '#ffffff' : '#000000');
     }
   }
 
@@ -189,45 +262,60 @@ export default class CollectionPopup {
 
     const scene   = this.scene;
     const centerX = scene.cameras.main.centerX;
-    const centerY = scene.cameras.main.centerY;
     const startY  = this.itemsStartY;
 
-    // ---------- ITEM TAB: fixed yellow card + scrollable grid ----------
+    // ------------------- ITEM TAB -------------------
     if (this.selectedTab === 'item') {
-
-      this.scrollContainer.removeAll(true);
-      this.detailContainer.removeAll(true);
-
-      const scene = this.scene;
       const centerX = scene.cameras.main.centerX;
-      
-      // place yellow card nearer top of list frame
-      const cardY = this.listMaskArea.y - this.visibleHeight / 2 + 130;  // within grey box
 
-      const detailOuter = scene.add.rectangle(centerX, cardY, this.listBgWidth, 220, 0xffffff)
-        .setStrokeStyle(4, 0xf4b400);
-      const thumb = scene.add.rectangle(centerX - 140, cardY - 40, 90, 90, 0xeeeeee);
+      // yellow-bordered detail card, placed near top of list area
+      const cardY = this.listMaskArea.y - this.visibleHeight / 2 + 130;
+
+      const detailOuter = scene.add.rectangle(
+        centerX,
+        cardY,
+        this.listBgWidth,
+        220,
+        0xffffff
+      ).setStrokeStyle(2, 0xf4b400);
+
+      const thumb = scene.add.rectangle(
+        centerX - 140,
+        cardY - 40,
+        90,
+        90,
+        0xeeeeee
+      );
 
       const titleText = scene.add.text(centerX - 70, cardY - 70, '이름이름이름', {
         fontSize: '16px',
         fontStyle: 'bold',
-        color: '#000'
+        color: '#000000'
       }).setOrigin(0, 0);
 
-      const descText = scene.add.text(centerX - 70, cardY - 40,
-        '아이템 설명이 들어가는 영역.\n여러 줄의 텍스트가 표시됩니다.', {
+      const descText = scene.add.text(
+        centerX - 70,
+        cardY - 40,
+        '아이템 설명이 들어가는 영역.\n여러 줄의 텍스트가 표시됩니다.',
+        {
           fontSize: '12px',
-          color: '#333',
+          color: '#333333',
           wordWrap: { width: 220 }
-        }).setOrigin(0, 0);
+        }
+      ).setOrigin(0, 0);
 
       const infoBarY = cardY + 40;
-      const infoBar = scene.add.rectangle(centerX, infoBarY, this.listBgWidth - 10, 26, 0xffffff)
-        .setStrokeStyle(2, 0xf4b400);
+      const infoBar = scene.add.rectangle(
+        centerX,
+        infoBarY,
+        this.listBgWidth - 10,
+        26,
+        0xffffff
+      ).setStrokeStyle(1, 0xf4b400);
 
       this.detailContainer.add([detailOuter, thumb, titleText, descText, infoBar]);
 
-      // scrollable grid (lower partition)
+      // scrollable grid area under the card
       const cols       = 4;
       const cardWidth  = 80;
       const cardHeight = 90;
@@ -236,8 +324,7 @@ export default class CollectionPopup {
 
       const totalWidth = cols * cardWidth + (cols - 1) * hGap;
       const gridStartX = centerX - totalWidth / 2 + cardWidth / 2;
-
-      const gridStartY = cardY + 140; // inside mask, independent of card
+      const gridStartY = cardY + 140; // inside mask
 
       for (let i = 0; i < this.itemsData.length; i++) {
         const row = Math.floor(i / cols);
@@ -251,15 +338,17 @@ export default class CollectionPopup {
 
         const cardBg = scene.add.rectangle(
           x, y, cardWidth, cardHeight,
-          locked ? 0xaaaaaa : 0xffffff,
-          locked ? 0.6 : 1
-        ).setStrokeStyle(1, 0x666666);
+          locked ? 0x555555 : 0xffffff,
+          locked ? 0.8 : 1
+        ).setStrokeStyle(0.5, 0x333333);
 
         const miniThumb = scene.add.rectangle(x, y - 8, 50, 40, 0xeeeeee);
 
         const nameText = scene.add.text(x, y + 22, item.name, {
           fontSize: '10px',
-          color: locked ? '#777777' : '#000000'
+          color: locked ? '#777777' : '#000000',
+          wordWrap: { width: cardWidth - 8 },
+          align: 'center'
         }).setOrigin(0.5);
 
         this.scrollContainer.add([cardBg, miniThumb, nameText]);
@@ -267,47 +356,86 @@ export default class CollectionPopup {
 
       const totalRows  = Math.ceil(this.itemsData.length / cols);
       const gridHeight = totalRows * cardHeight + (totalRows - 1) * vGap;
+      const visible    = this.listMaskArea.height;
+      const maxScroll  = Math.max(0, gridHeight - visible);
 
-      const visible = this.listMaskArea.height;
-
-      // how much we can scroll before the last row reaches bottom of mask
-      const maxScroll = Math.max(0, gridHeight - visible);
-
-      // bounds: 0 (top) down to -maxScroll (bottom)
       this.scrollBounds.max = maxScroll;
       this.scrollBounds.min = 0;
-
-      // reset scroll to top each time you open / switch tab
       this.scrollY = 0;
       this.updateScroll();
       return;
     }
 
-    // ---------- STORY TAB: original vertical list ----------
+    // ------------------- STORY TAB -------------------
     for (let i = 0; i < this.itemsData.length; i++) {
       const y    = startY + i * this.itemHeight;
       const item = this.itemsData[i];
 
-      const bg = scene.add.rectangle(centerX, y, this.listBgWidth, 70,
-        item.locked ? 0x888888 : 0xffffff,
-        item.locked ? 0.5 : 1
-      ).setStrokeStyle(1, 0x444);
+      // row background to match mock (light vs dark)
+      const rowBgColor   = item.locked ? 0x555555 : 0xf5f5f5;
+      const rowBgAlpha   = item.locked ? 0.8 : 1;
+      const strokeColor  = 0x333333;
 
-      const nameText = scene.add.text(centerX - 150, y, item.name, {
+      const bg = scene.add.rectangle(
+        centerX,
+        y,
+        this.listBgWidth,
+        70,
+        rowBgColor,
+        rowBgAlpha
+      ).setStrokeStyle(0.5, strokeColor);
+
+      const nameText = scene.add.text(centerX - 170, y, item.name, {
         fontSize: '16px',
-        color: item.locked ? '#666' : '#000'
+        color: item.locked ? '#aaaaaa' : '#000000',
+        fontFamily: 'Arial'
       }).setOrigin(0, 0.5);
 
+      // 3 pentagon sprites on the right
       for (let j = 0; j < 3; j++) {
-        const iconX = centerX + 80 + j * 38;
+        const iconX = centerX + 80 + j * 46;
         const iconY = y;
-        const width = 28;
-        const height = 22;
-        const fillColor   = item.locked ? 0x444444 : (item.status[j] ? 0xc2c2c2 : 0xefefef);
-        const strokeColor = item.locked ? 0x222222 : 0x888888;
-        const rect = scene.add.rectangle(iconX, iconY, width, height, fillColor)
-          .setStrokeStyle(2, strokeColor);
-        this.scrollContainer.add(rect);
+
+        let iconKey;
+
+        if (item.locked) {
+          iconKey = 'pentagon_lock';
+        } else {
+          iconKey = item.status[j] ? 'pentagon_on' : 'pentagon_off';
+        }
+
+        let icon;
+        if (scene.textures.exists(iconKey)) {
+          icon = scene.add.image(iconX, iconY, iconKey);
+          icon.setDisplaySize(40, 40);
+        } else {
+          // fallback: simple placeholder polygon if texture is missing
+          const g = scene.add.graphics({ x: iconX, y: iconY });
+          g.lineStyle(2, item.locked ? 0x111111 : 0x888888, 1);
+          g.fillStyle(item.locked ? 0x222222 : (item.status[j] ? 0xc2c2c2 : 0xefefef), 1);
+
+          const size  = 18;
+          const angle = -90 * (Math.PI / 180);
+          const pts   = [];
+          for (let k = 0; k < 5; k++) {
+            const a = angle + (k * 72 * Math.PI / 180);
+            pts.push({
+              x: Math.cos(a) * size,
+              y: Math.sin(a) * size
+            });
+          }
+          g.beginPath();
+          g.moveTo(pts[0].x, pts[0].y);
+          for (let k = 1; k < 5; k++) {
+            g.lineTo(pts[k].x, pts[k].y);
+          }
+          g.closePath();
+          g.fillPath();
+          g.strokePath();
+          icon = g;
+        }
+
+        this.scrollContainer.add(icon);
       }
 
       this.scrollContainer.add([bg, nameText]);
@@ -319,9 +447,9 @@ export default class CollectionPopup {
   }
 
   updateScroll() {
-  this.scrollY = Phaser.Math.Clamp(this.scrollY, -this.scrollBounds.max, this.scrollBounds.min);
-  this.scrollContainer.y = this.scrollY;
-}
+    this.scrollY = Phaser.Math.Clamp(this.scrollY, -this.scrollBounds.max, this.scrollBounds.min);
+    this.scrollContainer.y = this.scrollY;
+  }
 
   showPopup() {
     if (!this.popupContainer) {
