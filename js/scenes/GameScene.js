@@ -6,6 +6,7 @@ import StorePopup from '/ui/StorePopup.js';
 import CollectionPopup from '/ui/CollectionPopup.js';
 import CategoryButton from '/ui/CategoryButton.js';
 import CategoryButtonGroup from '/ui/CategoryButtonGroup.js';
+import CoinBar from '/ui/CoinBar.js';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -99,6 +100,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("notice_blueBg", "assets/notice_blueBg.png");
     this.load.image("notice_img", "assets/notice_img.png");
     this.load.image("notice_type", "assets/notice_type.png");
+    //coin
+    this.load.image("coin", "assets/coin.png");
     // Other images can be add here too
   }
 
@@ -122,6 +125,7 @@ export default class GameScene extends Phaser.Scene {
     this.createProgressBar();
     this.Lever.setProgressBarUpdateCallback(this.updateProgressBarUI.bind(this));
     this.storePopup = new StorePopup(this);
+    this.coinBar = new CoinBar(this, startX - 700, startY + 25);
   }
 
   createProgressBar() {
