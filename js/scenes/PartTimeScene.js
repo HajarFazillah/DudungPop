@@ -6,6 +6,7 @@ import PartTimeFrame from '/ui/PartTimeFrame.js';
 import HeartButton from '/ui/HeartButton.js';
 import LargeClickButton from '/ui/LargeClickButton.js';
 import CollectionPopup from '/ui/CollectionPopup.js';
+import StorePopup from '/ui/StorePopup.js';
 
 export default class PartTimeScene extends Phaser.Scene {
   constructor() {
@@ -50,6 +51,8 @@ export default class PartTimeScene extends Phaser.Scene {
     this.collectionPopup = new CollectionPopup(this);
     this.collectionPopup.createPopup();
 
+    this.storePopup = new StorePopup(this);
+
     // === Bottom Navigation ===
     this.bottomNav = new BottomNavBar(
       this,
@@ -59,18 +62,29 @@ export default class PartTimeScene extends Phaser.Scene {
   }
 
   onNavButtonClicked(label) {
-  console.log('PartTimeScene - button clicked:', label);
+    console.log('PartTimeScene - button clicked:', label);
 
-  if (label === '도감') {
-    if (this.collectionPopup) {
-      this.collectionPopup.showPopup();   // open in this scene
-    }
-  } else {
-    if (this.collectionPopup) {
-      this.collectionPopup.hidePopup();   // optional: hide for other buttons
+    // Hide all popups first (safe reset)
+    if (this.collectionPopup) this.collectionPopup.hidePopup();
+    if (this.storePopup) this.storePopup.hide();
+
+    switch (label) {
+      case '도감':
+        this.collectionPopup.showPopup();
+        break;
+
+      case '상점':
+        this.storePopup.show();
+        break;
+
+      // other buttons stay scene-based or idle for now
+      case '가방':
+      case '장식장':
+        console.log(label + ' clicked');
+        break;
     }
   }
-}
 
-  
+
+
 }

@@ -1,7 +1,8 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.esm.js';
 import TopButtonBar from '/ui/TopButtonBar.js';
-import BottomNavBar from '/ui/BottomNavBar.js';
 import CollectionPopup from '/ui/CollectionPopup.js';
+import StorePopup from '/ui/StorePopup.js';
+import BottomNavBar from '/ui/BottomNavBar.js';
 
 export default class InventoryScene extends Phaser.Scene {
   constructor() {
@@ -30,6 +31,7 @@ export default class InventoryScene extends Phaser.Scene {
     this.topButtonBar = new TopButtonBar(this, startX, startY);
     this.collectionPopup = new CollectionPopup(this);
     this.collectionPopup.createPopup();
+    this.storePopup = new StorePopup(this);
     this.bottomNavBar = new BottomNavBar(this, 1100, this.onNavButtonClicked.bind(this));
 
     // === Inventory Box ===
@@ -47,7 +49,7 @@ export default class InventoryScene extends Phaser.Scene {
     const startGridY = centerY - (rows / 2) * cellHeight + 60 + offsetY;
 
     const itemKeys = ['Char_Cake', 'Char_Snow', 'Char_Pen', 'Char_Happy'];
-    
+
     let itemIndex = 0;
 
     for (let row = 0; row < rows; row++) {
@@ -70,11 +72,26 @@ export default class InventoryScene extends Phaser.Scene {
   }
 
   onNavButtonClicked(label) {
-    console.log('InventoryScene - button clicked:', label);
-    if (label === '도감') {
-      if (this.collectionPopup) this.collectionPopup.showPopup();
-    } else {
-      if (this.collectionPopup) this.collectionPopup.hidePopup();
+    console.log(this.scene.key, '- button clicked:', label);
+
+    // hide all popups first (safe reset)
+    if (this.collectionPopup) this.collectionPopup.hidePopup();
+    if (this.storePopup) this.storePopup.hide();
+
+    switch (label) {
+      case '도감':
+        if (this.collectionPopup) this.collectionPopup.showPopup();
+        break;
+
+      case '상점':
+        if (this.storePopup) this.storePopup.show();
+        break;
+
+      // other buttons (optional for now)
+      case '가방':
+      case '장식장':
+        break;
     }
   }
+
 } 
