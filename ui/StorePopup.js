@@ -148,8 +148,21 @@ export default class StorePopup {
         {
           id: 'winter_store',
           text: '겨울 장식장',
-          price: 9999
-        }
+          price: 9999,
+          comingSoon: false
+        },
+        {
+      id: 'default_store_1',
+      text: '기본 장식장',
+      price: 0,
+      comingSoon: true
+     },
+     {
+      id: 'default_store_2',
+      text: '기본 장식장',
+      price: 0,
+      comingSoon: true
+     }
         // you can add more interiors
       ];
 
@@ -167,35 +180,32 @@ export default class StorePopup {
     const bg = scene.add.image(centerX, y, 'store_bg');
     bg.setDisplaySize(430, 150);
 
-    // description text on left inside gray
-    const text = scene.add.text(
-      bg.x - bg.displayWidth / 2 + 40,
-      y,
-      item.text,
-      {
-        fontSize: '20px',
-        color: '#000000',
-        fontFamily: 'Arial',
-        align: 'left',
-        wordWrap: { width: bg.displayWidth * 0.55 }
-      }
-    ).setOrigin(0, 0.5);
+   // ----- normal content (title + price) -----
+  const text = scene.add.text(
+    bg.x - bg.displayWidth / 2 + 40,
+    y,
+    item.text,
+    {
+      fontSize: '20px',
+      color: '#000000',
+      fontFamily: 'Arial',
+      align: 'left',
+      wordWrap: { width: bg.displayWidth * 0.55 }
+    }
+  ).setOrigin(0, 0.5);
 
-    // price image on right
-    const priceImg = scene.add.image(
-      bg.x + bg.displayWidth / 2 - 80,
-      y,
-      priceTextureKey
-    );
+  const priceImg = scene.add.image(
+    bg.x + bg.displayWidth / 2 - 80,
+    y,
+    priceTextureKey
+  );
 
-    // COIN ICON inside price box (left)
   const coinIcon = scene.add.image(
     priceImg.x - priceImg.displayWidth / 4,
     priceImg.y,
-    'coin'      // your coin.png key
-  ).setScale(0.5); // adjust
+    'coin'
+  ).setScale(0.5);
 
-  // PRICE TEXT inside price box (right side)
   const priceText = scene.add.text(
     priceImg.x + priceImg.displayWidth / 6,
     priceImg.y,
@@ -207,23 +217,76 @@ export default class StorePopup {
     }
   ).setOrigin(0.5);
 
-    // clickable area – use entire row
-    const hitRect = scene.add.rectangle(
+  // clickable area (will be disabled for comingSoon)
+  const hitRect = scene.add.rectangle(
+    bg.x,
+    y,
+    bg.displayWidth,
+    bg.displayHeight,
+    0x000000,
+    0
+  ).setInteractive({ useHandCursor: true });
+
+  hitRect.on('pointerdown', () => {
+    if (item.comingSoon) return; // ignore clicks on locked interiors
+    this.pendingItem = item;
+    this.showConfirm();
+  });
+
+  const children = [bg, text, priceImg, coinIcon, priceText, hitRect];
+
+  // ----- overlay for comingSoon items -----
+  if (item.comingSoon) {
+    // dark translucent box covering the whole card
+    const overlay = scene.add.rectangle(
       bg.x,
       y,
       bg.displayWidth,
       bg.displayHeight,
       0x000000,
-      0
-    ).setInteractive({ useHandCursor: true });
+      0.6
+    );
 
-    hitRect.on('pointerdown', () => {
-      this.pendingItem = item;
-      this.showConfirm();
-    });
+    const title = scene.add.text(
+      bg.x - bg.displayWidth / 2 + 40,
+      y - 30,
+      '기본 장식장',
+      {
+        fontSize: '22px',
+        color: '#ffffff',
+        fontFamily: 'DoveMayo'
+      }
+    ).setOrigin(0, 0.5);
 
-    this.itemsContainer.add([bg, text, priceImg, coinIcon, priceText, hitRect]);
+    const openSoon = scene.add.text(
+      bg.x - bg.displayWidth / 2 + 40,
+      y + 10,
+      '플레이타임 240시간 이후 오픈',
+      {
+        fontSize: '18px',
+        color: '#ffffff',
+        fontFamily: 'Arial'
+      }
+    ).setOrigin(0, 0.5);
+
+    // change button inside the price box area
+    const changeText = scene.add.text(
+      priceImg.x,
+      priceImg.y,
+      '변경하기',
+      {
+        fontSize: '18px',
+        color: '#000000',
+        fontFamily: 'Arial'
+      }
+    ).setOrigin(0.5);
+
+    // overlay should be above hitRect so clicks don't pass
+    children.push(overlay, title, openSoon, changeText);
   }
+
+  this.itemsContainer.add(children);
+}
 
   // confirm popup using store_buy png
   createConfirmPopup() {
@@ -284,10 +347,11 @@ export default class StorePopup {
     this.completeContainer.setVisible(false);
 
     const img = scene.add.image(centerX, centerY, 'store_buyComplete');
+    img.setDisplaySize(400,200);
 
-    // exit button at bottom-left of PNG
+    // exit button at right-left of PNG
     const exitHit = scene.add.rectangle(
-      img.x - img.displayWidth / 2 + 60,
+      img.x + img.displayWidth / 2 - 60,
       img.y + img.displayHeight / 2 - 40,
       80,
       40,
