@@ -44,9 +44,8 @@ export default class StorePopup {
     ).setInteractive();
 
     // main popup background (use your popup_bg1)
-     // main popup background (centered, same size as other popups)
-     const bg = scene.add.image(centerX, centerY, 'popup_bg1')
-     .setDisplaySize(this.popupWidth, this.popupHeight);
+    const bg = scene.add.image(centerX, centerY, 'popup_bg1')
+      .setDisplaySize(this.popupWidth, this.popupHeight);
 
 
     // tabs images
@@ -54,10 +53,10 @@ export default class StorePopup {
     const tabGap = 120;
 
     const enhanceTab = scene.add.image(centerX - tabGap / 2, tabY, 'store_enhance')
-      .setDisplaySize(90,30)
+      .setDisplaySize(90, 30)
       .setInteractive({ useHandCursor: true });
     const interiorTab = scene.add.image(centerX + tabGap / 2, tabY, 'store_interior')
-    .setDisplaySize(90,30)
+      .setDisplaySize(90, 30)
       .setInteractive({ useHandCursor: true });
 
     enhanceTab.on('pointerdown', () => {
@@ -74,13 +73,13 @@ export default class StorePopup {
 
     // close button (pink X) bottom-left, using simple text/rect
     const exitBtn = scene.add.image(
-  centerX - this.popupWidth / 2 + 32,   
-  centerY + this.popupHeight / 2 - 32,  
-  'exit_button'
- )
- .setDisplaySize(48, 48)
- .setInteractive({ useHandCursor: true });
- exitBtn.on('pointerdown', () => this.hide());
+      centerX - this.popupWidth / 2 + 32,
+      centerY + this.popupHeight / 2 - 32,
+      'exit_button'
+    )
+      .setDisplaySize(48, 48)
+      .setInteractive({ useHandCursor: true });
+    exitBtn.on('pointerdown', () => this.hide());
 
     // container for item rows
     this.itemsContainer = scene.add.container(0, 0);
@@ -152,17 +151,17 @@ export default class StorePopup {
           comingSoon: false
         },
         {
-      id: 'default_store_1',
-      text: '기본 장식장',
-      price: 0,
-      comingSoon: true
-     },
-     {
-      id: 'default_store_2',
-      text: '기본 장식장',
-      price: 0,
-      comingSoon: true
-     }
+          id: 'default_store_1',
+          text: '기본 장식장',
+          price: 0,
+          comingSoon: true
+        },
+        {
+          id: 'default_store_2',
+          text: '기본 장식장',
+          price: 0,
+          comingSoon: true
+        }
         // you can add more interiors
       ];
 
@@ -180,100 +179,36 @@ export default class StorePopup {
     const bg = scene.add.image(centerX, y, 'store_bg');
     bg.setDisplaySize(430, 150);
 
-   // ----- normal content (title + price) -----
-  const text = scene.add.text(
-    bg.x - bg.displayWidth / 2 + 40,
-    y,
-    item.text,
-    {
-      fontSize: '20px',
-      color: '#000000',
-      fontFamily: 'Arial',
-      align: 'left',
-      wordWrap: { width: bg.displayWidth * 0.55 }
-    }
-  ).setOrigin(0, 0.5);
-
-  const priceImg = scene.add.image(
-    bg.x + bg.displayWidth / 2 - 80,
-    y,
-    priceTextureKey
-  );
-
-  const coinIcon = scene.add.image(
-    priceImg.x - priceImg.displayWidth / 4,
-    priceImg.y,
-    'coin'
-  ).setScale(0.5);
-
-  const priceText = scene.add.text(
-    priceImg.x + priceImg.displayWidth / 6,
-    priceImg.y,
-    item.price.toString(),
-    {
-      fontSize: '18px',
-      color: '#000000',
-      fontFamily: 'Arial'
-    }
-  ).setOrigin(0.5);
-
-  // clickable area (will be disabled for comingSoon)
-  const hitRect = scene.add.rectangle(
-    bg.x,
-    y,
-    bg.displayWidth,
-    bg.displayHeight,
-    0x000000,
-    0
-  ).setInteractive({ useHandCursor: true });
-
-  hitRect.on('pointerdown', () => {
-    if (item.comingSoon) return; // ignore clicks on locked interiors
-    this.pendingItem = item;
-    this.showConfirm();
-  });
-
-  const children = [bg, text, priceImg, coinIcon, priceText, hitRect];
-
-  // ----- overlay for comingSoon items -----
-  if (item.comingSoon) {
-    // dark translucent box covering the whole card
-    const overlay = scene.add.rectangle(
-      bg.x,
+    // ----- normal content (title + price) -----
+    const text = scene.add.text(
+      bg.x - bg.displayWidth / 2 + 40,
       y,
-      bg.displayWidth,
-      bg.displayHeight,
-      0x000000,
-      0.6
+      item.text,
+      {
+        fontSize: '20px',
+        color: '#000000',
+        fontFamily: 'Arial',
+        align: 'left',
+        wordWrap: { width: bg.displayWidth * 0.55 }
+      }
+    ).setOrigin(0, 0.5);
+
+    const priceImg = scene.add.image(
+      bg.x + bg.displayWidth / 2 - 80,
+      y,
+      priceTextureKey
     );
 
-    const title = scene.add.text(
-      bg.x - bg.displayWidth / 2 + 40,
-      y - 30,
-      '기본 장식장',
-      {
-        fontSize: '22px',
-        color: '#ffffff',
-        fontFamily: 'DoveMayo'
-      }
-    ).setOrigin(0, 0.5);
-
-    const openSoon = scene.add.text(
-      bg.x - bg.displayWidth / 2 + 40,
-      y + 10,
-      '플레이타임 240시간 이후 오픈',
-      {
-        fontSize: '18px',
-        color: '#ffffff',
-        fontFamily: 'Arial'
-      }
-    ).setOrigin(0, 0.5);
-
-    // change button inside the price box area
-    const changeText = scene.add.text(
-      priceImg.x,
+    const coinIcon = scene.add.image(
+      priceImg.x - priceImg.displayWidth / 4,
       priceImg.y,
-      '변경하기',
+      'coin'
+    ).setScale(0.5);
+
+    const priceText = scene.add.text(
+      priceImg.x + priceImg.displayWidth / 6,
+      priceImg.y,
+      item.price.toString(),
       {
         fontSize: '18px',
         color: '#000000',
@@ -281,12 +216,76 @@ export default class StorePopup {
       }
     ).setOrigin(0.5);
 
-    // overlay should be above hitRect so clicks don't pass
-    children.push(overlay, title, openSoon, changeText);
-  }
+    // clickable area (will be disabled for comingSoon)
+    const hitRect = scene.add.rectangle(
+      bg.x,
+      y,
+      bg.displayWidth,
+      bg.displayHeight,
+      0x000000,
+      0
+    ).setInteractive({ useHandCursor: true });
 
-  this.itemsContainer.add(children);
-}
+    hitRect.on('pointerdown', () => {
+      if (item.comingSoon) return; // ignore clicks on locked interiors
+      this.pendingItem = item;
+      this.showConfirm();
+    });
+
+    const children = [bg, text, priceImg, coinIcon, priceText, hitRect];
+
+    // ----- overlay for comingSoon items -----
+    if (item.comingSoon) {
+      // dark translucent box covering the whole card
+      const overlay = scene.add.rectangle(
+        bg.x,
+        y,
+        bg.displayWidth,
+        bg.displayHeight,
+        0x000000,
+        0.6
+      );
+
+      const title = scene.add.text(
+        bg.x - bg.displayWidth / 2 + 40,
+        y - 30,
+        '기본 장식장',
+        {
+          fontSize: '22px',
+          color: '#ffffff',
+          fontFamily: 'DoveMayo'
+        }
+      ).setOrigin(0, 0.5);
+
+      const openSoon = scene.add.text(
+        bg.x - bg.displayWidth / 2 + 40,
+        y + 10,
+        '플레이타임 240시간 이후 오픈',
+        {
+          fontSize: '18px',
+          color: '#ffffff',
+          fontFamily: 'Arial'
+        }
+      ).setOrigin(0, 0.5);
+
+      // change button inside the price box area
+      const changeText = scene.add.text(
+        priceImg.x,
+        priceImg.y,
+        '변경하기',
+        {
+          fontSize: '18px',
+          color: '#000000',
+          fontFamily: 'Arial'
+        }
+      ).setOrigin(0.5);
+
+      // overlay should be above hitRect so clicks don't pass
+      children.push(overlay, title, openSoon, changeText);
+    }
+
+    this.itemsContainer.add(children);
+  }
 
   // confirm popup using store_buy png
   createConfirmPopup() {
@@ -300,7 +299,7 @@ export default class StorePopup {
     this.confirmContainer.setVisible(false);
 
     const img = scene.add.image(centerX, centerY, 'store_buy');
-    img.setDisplaySize(400,200);
+    img.setDisplaySize(400, 200);
 
 
     // clickable cancel (bottom-left area of the PNG)
@@ -347,7 +346,7 @@ export default class StorePopup {
     this.completeContainer.setVisible(false);
 
     const img = scene.add.image(centerX, centerY, 'store_buyComplete');
-    img.setDisplaySize(400,200);
+    img.setDisplaySize(400, 200);
 
     // exit button at right-left of PNG
     const exitHit = scene.add.rectangle(
@@ -367,9 +366,9 @@ export default class StorePopup {
   }
 
   showConfirm() {
-  if (!this.confirmContainer) return;
-  this.confirmContainer.setVisible(true);
-}
+    if (!this.confirmContainer) return;
+    this.confirmContainer.setVisible(true);
+  }
 
   // logic when user presses "Yes" on confirm popup
   handlePurchase() {
