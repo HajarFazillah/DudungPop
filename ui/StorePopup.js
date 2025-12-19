@@ -53,10 +53,10 @@ export default class StorePopup {
     const tabGap = 120;
 
     const enhanceTab = scene.add.image(centerX - tabGap / 2, tabY, 'store_enhance')
-      .setDisplaySize(90, 30)
+      .setDisplaySize(110, 45)
       .setInteractive({ useHandCursor: true });
     const interiorTab = scene.add.image(centerX + tabGap / 2, tabY, 'store_interior')
-      .setDisplaySize(90, 30)
+      .setDisplaySize(110, 45)
       .setInteractive({ useHandCursor: true });
 
     enhanceTab.on('pointerdown', () => {
@@ -224,15 +224,18 @@ export default class StorePopup {
       bg.displayHeight,
       0x000000,
       0
-    ).setInteractive({ useHandCursor: true });
+    );
+    const children = [bg, text, priceImg, coinIcon, priceText, hitRect];
 
-    hitRect.on('pointerdown', () => {
-      if (item.comingSoon) return; // ignore clicks on locked interiors
+    const onPriceClick = () => {
+      if (item.comingSoon) return;
       this.pendingItem = item;
       this.showConfirm();
-    });
+    };
 
-    const children = [bg, text, priceImg, coinIcon, priceText, hitRect];
+    priceImg.setInteractive({ useHandCursor: true }).on('pointerdown', onPriceClick);
+    coinIcon.setInteractive({ useHandCursor: true }).on('pointerdown', onPriceClick);
+    priceText.setInteractive({ useHandCursor: true }).on('pointerdown', onPriceClick);
 
     // ----- overlay for comingSoon items -----
     if (item.comingSoon) {
