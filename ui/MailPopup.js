@@ -14,48 +14,120 @@ export default class MailPopup {
         // Popup background settings
         const centerX = this.scene.cameras.main.centerX;
         const centerY = this.scene.cameras.main.centerY;
-        const width = 500, height = 700;
-        const boxHeight = 105;
-        const fontMd = 20, fontLg = 23;
-
+    
         // Main mail popup
         this.popup = this.scene.add.container(centerX, centerY);
 
-        // Panel background
-        const bg = this.scene.add.rectangle(0, 0, width, height, 0xf7e6af)
-            .setOrigin(0.5)
-            .setStrokeStyle(2, 0xbdc8cc);
-        this.popup.add(bg);
+       // 1) Main background (popup_bg1)
+  const bg = this.scene.add.image(0, 0, 'popup_bg1').setOrigin(0.5);
+  bg.setDisplaySize(500, 700);
+  this.popup.add(bg);
 
-        // Mail list: vertically stack mail items
-        mailList.forEach((mail, idx) => {
-            const boxY = -height / 2 + 55 + idx * (boxHeight + 8);
+  const width  = bg.displayWidth;
+  const height = bg.displayHeight;
 
-            // Draw each mail item box
-            const mailBox = this.scene.add.rectangle(0, boxY, width - 50, boxHeight, 0xffffff)
-            .setOrigin(0.5)
-            .setStrokeStyle(2, 0xe0e0e0);
-            this.popup.add(mailBox);
+  // 2) Outline area – this defines the visible scroll window
+  const outline = this.scene.add.image(0, 0, 'popup_outline').setOrigin(0.5);
+  outline.setDisplaySize(450, 650);
+  this.popup.add(outline);
 
-            // Icon (Envelope) – can preload or use a shape for demo
-           const iconBg = this.scene.add.circle(-width / 2 + 60, boxY, 30, 0xf0f0f0);
-           this.popup.add(iconBg);
-           const icon = this.scene.add.image(-width / 2 + 60, boxY, 'mail_icon')
-            .setOrigin(0.5)
-            .setDisplaySize(36, 24);
-           this.popup.add(icon);
+  const listWidth  = outline.displayWidth;
+  const listHeight = outline.displayHeight;
 
-            // Sender name and preview
-            this.popup.add(this.scene.add.text(-width / 2 + 110, boxY - 18, mail.sender, { fontSize: fontMd, fontStyle: "bold", color: "#242424" }));
-            this.popup.add(this.scene.add.text(-width / 2 + 110, boxY + 12, mail.title, { fontSize: fontMd - 2, color: "#757575" }));
-            
-            // Duration at right
-           this.popup.add(this.scene.add.text(width / 2 - 60, boxY, `보유 기간 n일`, { fontSize: fontMd - 2, color: "#999" }).setOrigin(1, 0.5));
+  // 3) Container that will scroll inside the outline
+  const scrollContainer = this.scene.add.container(0, 0);
+  this.popup.add(scrollContainer);
 
-            // Make mail openable (popup inner)
-            mailBox.setInteractive({ useHandCursor: true });
-            mailBox.on('pointerdown', () => this.showDetail(mail));
-        });
+  const boxHeight = 105;
+  const gap = 12;
+  const fontMd = 20;
+
+  // 4) Create each mail item (mail_bg2 + title/from text)
+  mailList.forEach((mail, idx) => {
+    const boxY = -listHeight / 2 + boxHeight / 2 + 10 + idx * (boxHeight + gap);
+
+    const desiredItemWidth  = listWidth - 10;   
+    const desiredItemHeight = 95;             
+    const itemBg = this.scene.add.image(0, boxY, 'mail_bg2')
+    .setOrigin(0.5)
+    .setDisplaySize(desiredItemWidth, desiredItemHeight);
+    scrollContainer.add(itemBg);
+
+    const itemWidth  = itemBg.displayWidth;
+    const titleLeftMargin  = 10;
+    const titleRightMargin = 95;
+
+    
+    // title background: full width of itemBg (with small margin)
+  const titleBg = this.scene.add.image(
+      -itemWidth / 2 + 10,  // left margin
+       boxY - 12,
+      'mail_titleBg'
+    )
+    .setOrigin(0, 0.5)
+    .setDisplaySize(itemWidth - (titleLeftMargin + titleRightMargin),  // width
+    28                                                 // height
+    );  
+  scrollContainer.add(titleBg);
+
+  const titleText = this.scene.add.text(
+    titleBg.x + 5,
+    titleBg.y,
+    mail.title,
+    { fontFamily: 'DoveMayo', fontSize: fontMd, color: '#222' }
+  ).setOrigin(0, 0.5);
+  scrollContainer.add(titleText);
+
+  // FROM background: same width as titleBg
+  const fromBg = this.scene.add.image(
+      -itemWidth / 2 + 10,
+      boxY + 20,
+      'mail_fromBg'
+    )
+    .setOrigin(0, 0.5)
+    .setDisplaySize( itemWidth - (titleLeftMargin + titleRightMargin),22);
+  scrollContainer.add(fromBg);
+
+  const fromText = this.scene.add.text(
+    fromBg.x + 10,
+    fromBg.y,
+    `FROM. ${mail.sender}`,
+    { fontFamily: 'DoveMayo', fontSize: fontMd - 3, color: '#555' }
+  ).setOrigin(0, 0.5);
+  scrollContainer.add(fromText);
+
+  // 확인 button: move to right edge of itemBg, resize to 80x80
+  const confirmBtn = this.scene.add.image(
+      itemWidth / 2 - 50,  // 10px margin from right
+      boxY,
+      'mail_confirmButton'
+    )
+    .setOrigin(0.5)
+    .setDisplaySize(80, 80)          // <== resize here
+    .setInteractive({ useHandCursor: true });
+  confirmBtn.on('pointerdown', () => this.showDetail(mail));
+  scrollContainer.add(confirmBtn);
+    // click area
+    const hit = this.scene.add.rectangle(0, boxY, itemWidth, itemBg.displayHeight, 0x000000, 0)
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+    hit.on('pointerdown', () => this.showDetail(mail));
+    scrollContainer.add(hit);
+  });
+
+  // 5) Simple wheel scroll for the list
+  const maxContentHeight = mailList.length * (boxHeight + gap);
+  const maxScroll = Math.max(0, maxContentHeight - listHeight);
+
+  this.scene.input.on('wheel', (pointer, over, dx, dy) => {
+    if (!this.popup) return;
+
+    // only scroll when pointer is inside outline bounds
+    const local = this.popup.pointToContainer(pointer.x, pointer.y);
+    if (Math.abs(local.x) <= listWidth / 2 && Math.abs(local.y) <= listHeight / 2) {
+      scrollContainer.y = Phaser.Math.Clamp(scrollContainer.y - dy, -maxScroll, 0);
+    }
+  });
 
         // Close button
         const xBtn = this.scene.add.image(-width/2 + 32, height/2 - 32, 'exit_button')
@@ -71,33 +143,77 @@ export default class MailPopup {
         if (this.innerPopup) this.innerPopup.destroy();
 
         // Popup panel reused
-        const centerX = this.scene.cameras.main.centerX;
-        const centerY = this.scene.cameras.main.centerY;
-        const width = 500, height = 700;
+        if (this.innerPopup) this.innerPopup.destroy();
 
-        this.innerPopup = this.scene.add.container(centerX, centerY);
+  const centerX = this.scene.cameras.main.centerX;
+  const centerY = this.scene.cameras.main.centerY;
 
-        // Panel background
-        const bg = this.scene.add.rectangle(0, 0, width, height, 0xf7e6af)
-            .setOrigin(0.5)
-            .setStrokeStyle(2, 0xbdc8cc);
-        this.innerPopup.add(bg);
+  this.innerPopup = this.scene.add.container(centerX, centerY);
 
-        // Add white inner background (rounded)
-       let innerBg;
-     if (this.scene.add.roundRectangle) {
-        innerBg = this.scene.add.roundRectangle(0, -50, width - 40, height - 210, 24, 0xffffff)
-            .setStrokeStyle(1, 0xe0e0e0);
-     } else {
-        innerBg = this.scene.add.rectangle(0, -50, width - 40, height - 210, 0xffffff)
-            .setStrokeStyle(1, 0xe0e0e0);
-     }
-        this.innerPopup.add(innerBg);
-        // Mail Details
-        this.innerPopup.add(this.scene.add.text(-width/2+40, -height/2+60, `보낸 사람: ${mail.sender}\n${mail.content}`, {
-            fontSize: 21,
-            color: "#222"
-        }));
+  const bg = this.scene.add.image(0, 0, 'popup_bg1')
+    .setOrigin(0.5);
+    bg.setDisplaySize(500, 700);
+  this.innerPopup.add(bg);
+
+  const width  = bg.displayWidth;
+  const height = bg.displayHeight;
+
+  // white inner panel from Figma 
+  const inner = this.scene.add.image(0, -20, 'mail_detail') 
+    .setOrigin(0.5);
+    inner.setDisplaySize(420, 540);
+     this.innerPopup.add(inner);
+
+   // === NEW: sender/date headers ===
+ const innerW = inner.displayWidth;
+const innerH = inner.displayHeight;
+
+// y position near top edge of inner panel
+const headerY = inner.y - innerH / 2 + 35;  // move up/down by changing 35
+
+// sender background (left)
+const senderBg = this.scene.add.image(
+  inner.x - innerW / 2 + 80,  // adjust 80 for left padding
+  headerY,
+  'mail_sender'
+).setOrigin(0.5);
+this.innerPopup.add(senderBg);
+
+this.innerPopup.add(this.scene.add.text(
+  senderBg.x,
+  senderBg.y,
+  mail.sender || '팀이름',
+  { fontFamily: 'DoveMayo', fontSize: 18, color: '#222' }
+).setOrigin(0.5));
+
+// date background (right)
+const dateBg = this.scene.add.image(
+  inner.x + innerW / 2 - 90,  // adjust 90 for right padding
+  headerY,
+  'mail_date'
+).setOrigin(0.5);
+this.innerPopup.add(dateBg);
+
+this.innerPopup.add(this.scene.add.text(
+  dateBg.x,
+  dateBg.y,
+  mail.date || '9999. 99. 99',
+  { fontFamily: 'DoveMayo', fontSize: 18, color: '#222' }
+).setOrigin(0.5));
+
+  // body text
+    const bodyText = this.scene.add.text(
+  inner.x - innerW / 2 + 30,           // left padding
+  headerY + 40,                        // below sender/date row
+  mail.content,
+  {
+    fontFamily: 'DoveMayo',
+    fontSize: 20,
+    color: '#222',
+    wordWrap: { width: innerW - 60 }   // right padding
+  }
+).setOrigin(0, 0);
+this.innerPopup.add(bodyText);
 
         // Reward button only if mail.hasReward === true
         if (mail.hasReward && !mail.received) {
@@ -137,29 +253,37 @@ export default class MailPopup {
         this.scene.scale.width,
         this.scene.scale.height,
         0x000000, 0.4 
-      ).setOrigin(0.5).setInteractive();
+      ).setOrigin(0.5)
+      .setInteractive();
      popupLayer.add(blocker);
 
-         //Reward Popup
-        const w = 340, h = 185;
-        const popup = this.scene.add.container(this.scene.cameras.main.centerX, this.scene.cameras.main.centerY);
-        const bg = this.scene.add.rectangle(0, 0, w, h, 0xdbdbdb).setOrigin(0.5);
-        popup.add(bg);
+       const centerX = this.scene.cameras.main.centerX;
+  const centerY = this.scene.cameras.main.centerY;
 
-        // Coin image and description
-        const coin = this.scene.add.image(0, 0, 'quest_coin').setOrigin(0.5).setDisplaySize(125, 125);
-        popup.add(coin);
-        popup.add(this.scene.add.text(-120, 60, `보상을 받았습니다.`, { fontSize: 30, color: "#222" }));
+  const popup = this.scene.add.container(centerX, centerY);
+  popupLayer.add(popup);
 
-        // Confirm button 
-        const yesBtn = this.scene.add.image(150, 78, 'yes_button')
-            .setOrigin(0.5)
-            .setDisplaySize(30, 30)
-            .setInteractive({ useHandCursor: true });
-        yesBtn.on('pointerdown', () => {
-         popupLayer.destroy();  // clean up everything (blocker + popup)
-     });
-     popup.add(yesBtn);
-     popupLayer.add(popup);
-     }
+  // full popup image from Figma
+  const bg = this.scene.add.image(0, 0, 'mail_rewardClaimed')  // new key
+    .setOrigin(0.5);
+    bg.setDisplaySize(400, 200)
+  popup.add(bg);
+
+  const w = bg.displayWidth;
+  const h = bg.displayHeight;
+
+  // invisible hit area over the tick button at bottom right
+  const tickHit = this.scene.add.rectangle(
+    w / 2 - 35,  // adjust to match tick position
+    h / 2 - 25,
+    60, 40,
+    0x000000, 0
+  )
+    .setOrigin(0.5)
+    .setInteractive({ useHandCursor: true });
+  tickHit.on('pointerdown', () => {
+    popupLayer.destroy();
+  });
+  popup.add(tickHit);
+}
 }

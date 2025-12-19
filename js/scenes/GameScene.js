@@ -6,6 +6,7 @@ import StorePopup from '/ui/StorePopup.js';
 import CollectionPopup from '/ui/CollectionPopup.js';
 import CategoryButton from '/ui/CategoryButton.js';
 import CategoryButtonGroup from '/ui/CategoryButtonGroup.js';
+import CoinBar from '/ui/CoinBar.js';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -53,6 +54,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("cat2BtnOff", "assets/ButtonCat2_Off.png");
     this.load.image("cat2BtnOn", "assets/ButtonCat2_On.png");
     this.load.image("cat3BtnOff", "assets/ButtonCat3_Off.png");
+    //Popup Background
+     this.load.image("popup_bg1", "assets/popup_bg1.png");
+     this.load.image("popup_outline", "assets/popup_outline.png");
+
     //Quest Button
     this.load.image("questBtn", "assets/questBtn.png");
     this.load.image("quest_coin", "assets/quest_coin.png");
@@ -60,13 +65,24 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("quest_claimed", "assets/quest_claimed.png");
     this.load.image("exit_button", "assets/exit_button.png");
     this.load.image("yes_button", "assets/yes_button.png");
+    this.load.image("quest_bg1", "assets/quest_bg1.png");
+    this.load.image("quest_bg2", "assets/quest_bg2.png");
     //Mail Button
     this.load.image("mailBtn", "assets/mailBtn.png");
     this.load.image("mail_icon", "assets/mail_icon.png");
     this.load.image("mail_rewardBtn", "assets/mail_rewardBtn.png");
     this.load.image("mail_rewardBtnX", "assets/mail_rewardBtnX.png");
+    this.load.image("mail_bg2", "assets/mail_bg2.png");
+    this.load.image("mail_confirmButton", "assets/mail_confirmButton.png");
+    this.load.image("mail_fromBg", "assets/mail_fromBg.png");
+    this.load.image("mail_rewardClaimed", "assets/mail_rewardClaimed.png");
+    this.load.image("mail_titleBg", "assets/mail_titleBg.png");
+    this.load.image("mail_detail", "assets/mail_detail.png");
+    this.load.image("mail_sender", "assets/mail_sender.png");
+     this.load.image("mail_date", "assets/mail_date.png");
     //Setting Button
     this.load.image("settingBtn", "assets/settingBtn.png");
+    this.load.image("setting_bg", "assets/setting_bg.png");
     this.load.image("sound0", "assets/sound0.png");
     this.load.image("sound1", "assets/sound1.png");
     this.load.image("sound2", "assets/sound2.png");
@@ -77,6 +93,22 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("music3", "assets/music3.png");
     //Notice Button
     this.load.image("noticeBtn", "assets/noticeBtn.png");
+    this.load.image("notice_bg", "assets/notice_bg.png");
+    this.load.image("notice_pinkBg", "assets/notice_pinkBg.png");
+    this.load.image("notice_yellowBg", "assets/notice_yellowBg.png");
+    this.load.image("notice_greenBg", "assets/notice_greenBg.png");
+    this.load.image("notice_blueBg", "assets/notice_blueBg.png");
+    this.load.image("notice_img", "assets/notice_img.png");
+    this.load.image("notice_type", "assets/notice_type.png");
+    //coin
+    this.load.image("coin", "assets/coin.png");
+    //Store
+    this.load.image("store_bg", "assets/store_bg.png");
+    this.load.image("store_enhance", "assets/store_enhance.png");
+    this.load.image("store_interior", "assets/store_interior.png");
+    this.load.image("store_price", "assets/store_price.png");
+    this.load.image("store_buy", "assets/store_buy.png");
+    this.load.image("store_buyComplete", "assets/store_buyComplete.png");
     // Other images can be add here too
   }
 
@@ -89,6 +121,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Create UI components (in order from  top to bottom of the page)
     this.topButtonBar = new TopButtonBar(this, startX, startY);
+    this.coinBar = new CoinBar(this, startX - 700, startY + 25);
     this.collectionPopup = new CollectionPopup(this);
     this.collectionPopup.createPopup();
     this.categoryGroup = new CategoryButtonGroup(this, centerX, (label) => this.onCategoryClicked(label));
@@ -99,7 +132,8 @@ export default class GameScene extends Phaser.Scene {
     this.Lever.createLever();
     this.createProgressBar();
     this.Lever.setProgressBarUpdateCallback(this.updateProgressBarUI.bind(this));
-    this.storePopup = new StorePopup(this);
+    this.playerState = { coins: 999999, bagSlots: 20, clickLevel: 1 };
+    this.storePopup = new StorePopup(this, this.playerState)
   }
 
   createProgressBar() {

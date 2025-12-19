@@ -20,6 +20,7 @@ export default class QuestPopup {
         // Calculate center for popup
         const centerX = this.scene.cameras.main.centerX;
         const centerY = this.scene.cameras.main.centerY;
+         this.popup = this.scene.add.container(centerX, centerY);
 
         // Sizing constants
         const bgWidth = 500;
@@ -34,25 +35,28 @@ export default class QuestPopup {
         const iconSize = 70;
         const gap = 18;  // spacing between boxes
 
-        // Main popup box
-        this.popup = this.scene.add.container(centerX, centerY);
+       // Blocker (cover full screen, not just bg size)
+const blocker = this.scene.add.rectangle(
+  0,
+  0,
+  this.scene.scale.width,
+  this.scene.scale.height,
+  0x000000,
+  0
+).setOrigin(0.5).setInteractive();
+this.popup.add(blocker);
 
-         // Blocker (blocks lever click)
-        const blocker = this.scene.add.rectangle(0, 0, bgWidth, bgHeight, 0x000000, 0)
-            .setOrigin(0.5)
-            .setInteractive({ useHandCursor: false });
-        this.popup.add(blocker); 
+// Popup background image (same as Mail / Notice)
+const bg = this.scene.add.image(0, 0, 'popup_bg1')
+  .setOrigin(0.5)
+  .setDisplaySize(500, 700);  // same size you use in Mail/Notice
+this.popup.add(bg);
 
-       // Popup background
-        const bg = this.scene.add.rectangle(0, 0, bgWidth, bgHeight, 0xf7e6af)
-            .setStrokeStyle(2, 0xbdc8cc)
-            .setOrigin(0.5);
-        this.popup.add(bg);
 
        // Timer (top right)
         const timerText = this.scene.add.text(bgWidth / 2 - 95, -bgHeight / 2 + 25, '', { fontSize: 18, color: '#444' });
         this.popup.add(timerText);
-        const timerIcon = this.scene.add.circle(bgWidth / 2 - 115, -bgHeight / 2 + 32, 12, 0xf7e6af)
+        const timerIcon = this.scene.add.circle(bgWidth / 2 - 115, -bgHeight / 2 + 32, 12, 0xffffff)
             .setStrokeStyle(1, 0x444444);
         this.popup.add(timerIcon);
          // Timer update (KST)
@@ -111,15 +115,23 @@ this.timerEvent = this.scene.time.addEvent({
             let baseY;
             if (idx === 0) {
                 // Weekly quest 
-                baseY = firstBoxStartY + weeklyBoxHeight / 4 + (idx - 1) * (questBoxHeight + gap) + questBoxHeight / 3;
-                const questBg = this.scene.add.rectangle(0, baseY, questBoxWidth, weeklyBoxHeight, 0xdabbfd).setOrigin(0.5);
-                this.popup.add(questBg);
+                 baseY = firstBoxStartY
+                 + weeklyBoxHeight / 4
+                 + (idx - 1) * (questBoxHeight + gap)
+                 + questBoxHeight / 3;
 
-                // "월요일 보상" top white
-                this.popup.add(this.scene.add.text(0, baseY - weeklyBoxHeight / 2 + 20, "월요일 보상", {
-                    fontSize: fontMd,
-                    color: "#ffffff"
-                }).setOrigin(0.5));
+         const questBg = this.scene.add.image(0, baseY, 'quest_bg1')
+         .setOrigin(0.5)
+         .setDisplaySize(questBoxWidth, weeklyBoxHeight);
+         this.popup.add(questBg);
+
+         // "월요일 보상"
+         this.popup.add(this.scene.add.text(
+         0,
+         baseY - weeklyBoxHeight / 2 + 20,
+         '월요일 보상',
+         { fontSize: fontMd, color: '#222222' }
+         ).setOrigin(0.5));
 
                 // Title (centered below)
                 this.popup.add(this.scene.add.text(0, baseY - weeklyBoxHeight / 2 + 42, quest.title, {
@@ -160,9 +172,15 @@ this.timerEvent = this.scene.time.addEvent({
                  this.popup.add(btnImg);
             }    else {
                 // Regular quests
-                baseY = firstBoxStartY + weeklyBoxHeight / 4 + (idx - 1) * (questBoxHeight + gap) + questBoxHeight / 2;
-                const questBg = this.scene.add.rectangle(0, baseY, questBoxWidth, questBoxHeight, 0xffd55c).setOrigin(0.5);
-                this.popup.add(questBg);
+                  baseY = firstBoxStartY
+                 + weeklyBoxHeight / 4
+                 + (idx - 1) * (questBoxHeight + gap)
+                 + questBoxHeight / 2;
+
+                 const questBg = this.scene.add.image(0, baseY, 'quest_bg2')
+                 .setOrigin(0.5)
+                 .setDisplaySize(questBoxWidth, questBoxHeight);
+                  this.popup.add(questBg);
 
                 // Title (left)
                 this.popup.add(this.scene.add.text(-questBoxWidth/2 + 40, baseY, quest.title, {
@@ -172,7 +190,7 @@ this.timerEvent = this.scene.time.addEvent({
 
                 // Progress bar
                 const pbBg = this.scene.add.rectangle(-questBoxWidth/2 + 40, baseY + 18, progressBarWidth, progressBarHeight, 0xffffff)
-                    .setOrigin(0, 0.5).setStrokeStyle(1, 0x666);
+                    .setOrigin(0, 0.5).setStrokeStyle(1, 0x666666);
                 this.popup.add(pbBg);
                 const progress = Math.max(0, Math.min(1, quest.curValue / quest.goalValue));
                 const pbFill = this.scene.add.rectangle(-questBoxWidth/2 + 40, baseY + 18, progress*progressBarWidth, progressBarHeight, 0x000000)

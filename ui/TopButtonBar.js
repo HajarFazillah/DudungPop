@@ -73,14 +73,33 @@ export default class TopButtonBar {
                    this.settingPopup.show();
          } else if (label === '공지') {
             // Example notice data
-             const noticeList = [
-             { 
-              title: "공지공지공지공지공지공지업데이트안내",
-              text: "공지공지공지공지공지공지업데이트안내\n공지공지공지공지공지공지업데이트안내\n공지공지공지공지공지공지업데이트안내"
-             },
-            { title: "새 이벤트 공지", text: "새로운 이벤트가 추가되었습니다!" }
-            ];
-             this.noticePopup.show(noticeList);
+              const noticeList = [
+    {
+      type: '공지 사항',                 // pink
+      date: '9999. 99. 99',
+      title: '공지 안내',
+      text: '공지공지공지공지공지공지업데이트안내\n공지공지공지공지공지공지업데이트안내\n공지공지공지공지공지공지업데이트안내'
+    },
+    {
+      type: '이벤트 공지',               // yellow
+      date: '9999. 99. 99',
+      title: '새 이벤트 공지',
+      text: '새로운 이벤트가 추가되었습니다!'
+    },
+    {
+      type: '개발자 노트',               // green
+      date: '9999. 99. 99',
+      title: '개발자 노트 예시',
+      text: '개발 노트 내용...'
+    },
+    {
+      type: '업데이트',                 // blue
+      date: '9999. 99. 99',
+      title: '업데이트 안내',
+      text: '업데이트 내용...'
+    }
+  ];
+  this.noticePopup.show(noticeList);
     } else {
         this.showSimplePopup(label + ' 팝업입니다');
     }
@@ -141,50 +160,4 @@ export default class TopButtonBar {
             this.popup = null;
         });
     }
-
-    /*
-    showMailPopup() {
-        
-        if (this.popup) {
-            this.popup.destroy();
-            this.popup = null;
-        }
-        const centerX = this.cameras.main.centerX;
-        const centerY = 300;
-
-        this.popup = this.add.container(centerX, centerY);
-        const bg = this.add.rectangle(0, 0, 400, 300, 0xffcce2)
-            .setStrokeStyle(2, 0x000000)
-            .setOrigin(0.5);
-        this.popup.add(bg);
-
-        const xBtnSize = 36;
-        const xBtn = this.add.text(bg.width/2 - xBtnSize, -bg.height/2 + xBtnSize, 'X', {
-        fontSize: '28px', fontStyle: 'bold', color: '#91131a', fontFamily: 'Arial'
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-        this.popup.add(xBtn);
-
-        xBtn.on('pointerover', () => xBtn.setColor('#fa5555'));
-        xBtn.on('pointerout', () => xBtn.setColor('#91131a'));
-        xBtn.on('pointerdown', () => {
-        this.popup.destroy();
-        this.popup = null;
-        });
-
-        // Example mail list (you can replace with dynamic message list)
-        const mails = [
-            '메시지1: 환영합니다!',
-            '메시지2: 보상 수령하세요.',
-            '메시지3: 새 친구가 추가되었습니다.',
-            '메시지4: 이벤트 안내'
-        ];
-    
-        mails.forEach((msg, i) => {
-            const item = this.add.text(-140, -140 + i * 38, msg, {
-            fontSize: '21px', color: '#222'
-            }).setOrigin(0, 0);
-        this.popup.add(item);
-        });
-    }*/
-
 }
