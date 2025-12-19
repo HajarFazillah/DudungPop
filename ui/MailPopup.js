@@ -149,7 +149,7 @@ export default class MailPopup {
       .setOrigin(0.5)
       .setDisplaySize(48, 48)
       .setInteractive({ useHandCursor: true });
-    xBtn.on('pointerdown', () => { this.popup.destroy(); this.popup = null; this,this.popupLayer.destroy();this.popupLayer = null;});
+    xBtn.on('pointerdown', () => { this.popup.destroy(); this.popup = null;this.popupLayer.destroy();this.popupLayer = null;});
     this.popup.add(xBtn);
   }
 
