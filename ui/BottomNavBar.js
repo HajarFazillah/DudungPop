@@ -12,6 +12,14 @@ export default class BottomNavBar {
   }
 
   createBottomNavBar() {
+
+    const buttonImages = [
+      'navbar_theme',
+      'navbar_bag',
+      'navbar_store',
+      'navbar_collection'
+    ];
+
     const totalWidth = this.n * (this.circleRadius * 2) + (this.n - 1) * this.circleGap;
     const centerXNav = this.scene.cameras.main.centerX;
     const startXNav = centerXNav - totalWidth / 2 + this.circleRadius;
@@ -25,26 +33,27 @@ export default class BottomNavBar {
       arrowSize, 0, 0, arrowSize / 2, arrowSize, arrowSize, 0x222222
     ).setInteractive({ useHandCursor: true });
 
-    // Create circle buttons
     this.labels.forEach((label, i) => {
       const x = startXNav + i * (this.circleRadius * 2 + this.circleGap);
-      const circleBtn = this.scene.add.circle(x, navY, this.circleRadius, 0xf1f1f1)
-        .setInteractive({ useHandCursor: true });
-      const textBtn = this.scene.add.text(x, navY, label, {
-        fontSize: '26px', color: '#222', fontFamily: 'Arial', fontStyle: 'bold'
-      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
-      // Button click event
-      const handleClick = () => {
+      const btn = this.scene.add.image(
+        x,
+        navY,
+        buttonImages[i]
+      )
+        .setDisplaySize(this.circleRadius * 2, this.circleRadius * 2)
+        .setInteractive({ useHandCursor: true });
+
+      btn.on('pointerdown', () => {
         console.log(label + ' 버튼이 클릭되었습니다.');
         if (this.onButtonClicked) {
-          this.onButtonClicked(label); // call the parent scene’s function
+          this.onButtonClicked(label);
         }
-      };
-
-      circleBtn.on('pointerdown', handleClick);
-      textBtn.on('pointerdown', handleClick);
+      });
     });
+
+
+
 
     // Right Arrow
     const rightArrow = this.scene.add.triangle(
@@ -71,6 +80,6 @@ export default class BottomNavBar {
       console.log(`Right arrow → going to ${targetScene}`);
       this.scene.scene.start(targetScene);
     });
-  
+
   }
 }

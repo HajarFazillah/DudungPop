@@ -55,9 +55,13 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("cat2BtnOn", "assets/ButtonCat2_On.png");
     this.load.image("cat3BtnOff", "assets/ButtonCat3_Off.png");
     //Popup Background
-     this.load.image("popup_bg1", "assets/popup_bg1.png");
-     this.load.image("popup_outline", "assets/popup_outline.png");
-
+    this.load.image("popup_bg1", "assets/popup_bg1.png");
+    this.load.image("popup_outline", "assets/popup_outline.png");
+    // bottom nav bar
+    this.load.image("navbar_theme", "assets/navbar_theme.png");
+    this.load.image("navbar_bag", "assets/navbar_bag.png");
+    this.load.image("navbar_store", "assets/navbar_store.png");
+    this.load.image("navbar_collection", "assets/navbar_collection.png");
     //Quest Button
     this.load.image("questBtn", "assets/questBtn.png");
     this.load.image("quest_coin", "assets/quest_coin.png");
@@ -79,7 +83,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("mail_titleBg", "assets/mail_titleBg.png");
     this.load.image("mail_detail", "assets/mail_detail.png");
     this.load.image("mail_sender", "assets/mail_sender.png");
-     this.load.image("mail_date", "assets/mail_date.png");
+    this.load.image("mail_date", "assets/mail_date.png");
     //Setting Button
     this.load.image("settingBtn", "assets/settingBtn.png");
     this.load.image("setting_bg", "assets/setting_bg.png");
