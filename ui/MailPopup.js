@@ -122,12 +122,6 @@ export default class MailPopup {
         .setInteractive({ useHandCursor: true });
       confirmBtn.on('pointerdown', () => this.showDetail(mail));
       scrollContainer.add(confirmBtn);
-      // click area
-      const hit = this.scene.add.rectangle(0, boxY, itemWidth, itemBg.displayHeight, 0x000000, 0)
-        .setOrigin(0.5)
-        .setInteractive({ useHandCursor: true });
-      hit.on('pointerdown', () => this.showDetail(mail));
-      scrollContainer.add(hit);
     });
 
     // 5) Simple wheel scroll for the list
