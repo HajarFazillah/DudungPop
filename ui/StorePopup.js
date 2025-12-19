@@ -49,13 +49,14 @@ export default class StorePopup {
 
 
     // tabs images
+    const tabX = centerX- 120;
     const tabY = centerY - this.popupHeight / 2 + 40;
-    const tabGap = 120;
+    const tabGap = 115;
 
-    const enhanceTab = scene.add.image(centerX - tabGap / 2, tabY, 'store_enhance')
+    const enhanceTab = scene.add.image(tabX - tabGap / 2, tabY, 'store_enhance')
       .setDisplaySize(110, 45)
       .setInteractive({ useHandCursor: true });
-    const interiorTab = scene.add.image(centerX + tabGap / 2, tabY, 'store_interior')
+    const interiorTab = scene.add.image(tabX + tabGap / 2, tabY, 'store_interior')
       .setDisplaySize(110, 45)
       .setInteractive({ useHandCursor: true });
 
