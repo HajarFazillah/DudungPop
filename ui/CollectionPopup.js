@@ -418,8 +418,6 @@ export default class CollectionPopup {
          // overlay should be above everything for locked rows
         this.scrollContainer.add(overlay);
       }
-
-      //this.scrollContainer.add([rowBg, nameText]);
     }
 
     this.scrollBounds.max = Math.max(0, this.itemsData.length * this.itemHeight - this.visibleHeight);
