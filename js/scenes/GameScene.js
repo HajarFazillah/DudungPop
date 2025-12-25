@@ -129,6 +129,9 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('collection_frame', 'assets/collection_frame.png');
     this.load.image('collection_star', 'assets/collection_star.png');
     this.load.image('collection_star_black', 'assets/collection_star_black.png');
+    this.load.image('collection_bg3', 'assets/collection_bg3.png');
+    this.load.image('collection_title_bg', 'assets/collection_title_bg.png');
+    this.load.image('collection_gacha', 'assets/collection_gacha.png');
     // Other images can be add here too
   }
 
