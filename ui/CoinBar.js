@@ -2,39 +2,28 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.esm.js';
 
 export default class CoinBar {
-  constructor(scene, leftX, y) {
+  constructor(scene, leftX , y) {
     this.scene = scene;
+  
+    // main bar background from image
+    this.bg = scene.add.image(leftX + 220, y, 'coin_bar')
+      .setOrigin(0, 0.5)          // left‑aligned
+      .setScale(1.2);
 
-    const barWidth = 500;
-    const barHeight = 35;
-    const left   = 10;
-    const right  = left + barWidth;
-
-    // middle rect
-    this.mid = scene.add.rectangle(
-      left + barWidth / 2,
-      y,
-      barWidth - 20,
-      barHeight,
-      0xffffff
-    ).setStrokeStyle(2, 0x000000);
-
-    // caps
-    this.leftCap = scene.add.circle(left + 10, y, barHeight / 2, 0xffffff)
-      .setStrokeStyle(2, 0x000000);
-    
+    const barWidth = this.bg.displayWidth;
+    const barHeight = this.bg.displayHeight;
 
     // coin icon
-   this.icon = scene.add.image(left + barHeight / 2, y, 'coin')
+    this.icon = scene.add.image((leftX + 225) + barHeight / 2, y, 'coin')
       .setOrigin(0.5)
-      .setDisplaySize(50, 50);
+      .setScale(0.7);
 
     // amount text
     this.text = scene.add.text(
-      left + barWidth / 2,
+      (leftX + 330) + barWidth / 2,
       y,
       '000000000',
-      { fontFamily: 'DoveMayo', fontSize: 25, color: '#000000' }
+      { fontFamily: 'DoveMayo', fontSize: 30, color: '#000000' }
     ).setOrigin(0.5);
 
     this.total = 0;

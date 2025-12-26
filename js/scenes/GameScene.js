@@ -109,6 +109,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("notice_type", "assets/notice_type.png");
     //coin
     this.load.image("coin", "assets/coin.png");
+    this.load.image("coin_bar", "assets/coin_bar.png");
     //Store
     this.load.image("store_bg", "assets/store_bg.png");
     this.load.image("store_enhance", "assets/store_enhance.png");
@@ -116,6 +117,32 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("store_price", "assets/store_price.png");
     this.load.image("store_buy", "assets/store_buy.png");
     this.load.image("store_buyComplete", "assets/store_buyComplete.png");
+    //collection
+    this.load.image('collection_bg', 'assets/collection_bg.png');
+    this.load.image('collection_story_clicked', 'assets/collection_story_clicked.png');
+    this.load.image('collection_story_unclicked', 'assets/collection_story_unclicked.png');
+    this.load.image('collection_item_clicked', 'assets/collection_item_clicked.png');
+    this.load.image('collection_item_unclicked', 'assets/collection_item_unclicked.png');
+    this.load.image('collection_total_bg', 'assets/collection_total_bg.png');
+    this.load.image('collection_book_open', 'assets/collection_book_open.png');
+    this.load.image('collection_bg2', 'assets/collection_bg2.png');
+    this.load.image('collection_frame', 'assets/collection_frame.png');
+    this.load.image('collection_star', 'assets/collection_star.png');
+    this.load.image('collection_star_black', 'assets/collection_star_black.png');
+    this.load.image('collection_bg3', 'assets/collection_bg3.png');
+    this.load.image('collection_title_bg', 'assets/collection_title_bg.png');
+    this.load.image('collection_gacha', 'assets/collection_gacha.png');
+    this.load.image('collection_gift', 'assets/collection_gift.png');
+    this.load.image('collection_capsule', 'assets/collection_capsule.png');
+    this.load.image('collection_item_bg', 'assets/collection_item_bg.png');
+    this.load.image('collection_item_bg2', 'assets/collection_item_bg2.png');
+    this.load.image('collection_item_bg3', 'assets/collection_item_bg3.png');
+    this.load.image('collection_item_board', 'assets/collection_item_board.png');
+    this.load.image('collection_item_outline', 'assets/collection_item_outline.png');
+    this.load.image('collection_item_unite', 'assets/collection_item_unite.png');
+    this.load.image('collection_possible_item', 'assets/collection_possible_item.png');
+    this.load.image('collection_items', 'assets/collection_items.png');
+    
     // Other images can be add here too
   }
 

@@ -38,7 +38,7 @@ export default class TopButtonBar {
 
             const btn = this.scene.add.image(x, 0, imgKey)
                 .setOrigin(0.5)
-                .setScale(2.5)   // adjust to match your png size
+                .setScale(0.7)   // adjust to match your png size
                 .setInteractive({ useHandCursor: true });
 
             btn.on('pointerover', () => btn.setTint(0xdddddd));
