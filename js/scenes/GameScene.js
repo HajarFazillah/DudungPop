@@ -140,7 +140,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('collection_item_board', 'assets/collection_item_board.png');
     this.load.image('collection_item_outline', 'assets/collection_item_outline.png');
     this.load.image('collection_item_unite', 'assets/collection_item_unite.png');
-    this.load.image('collection_possible_item', 'assets/collection_possible_itempng');
+    this.load.image('collection_possible_item', 'assets/collection_possible_item.png');
+    this.load.image('collection_items', 'assets/collection_items.png');
     
     // Other images can be add here too
   }
