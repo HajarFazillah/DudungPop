@@ -5,6 +5,7 @@ import Lever from '/ui/Lever.js';
 import StorePopup from '/ui/StorePopup.js';
 import CollectionPopup from '/ui/CollectionPopup.js';
 import ThemePopup from '/ui/ThemePopup.js';
+import BagPopup from '/ui/BagPopup.js';
 import CategoryButton from '/ui/CategoryButton.js';
 import CategoryButtonGroup from '/ui/CategoryButtonGroup.js';
 import CoinBar from '/ui/CoinBar.js';
@@ -77,7 +78,6 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("quest_bg2", "assets/quest_bg2.png");
     //Mail Button
     this.load.image("mailBtn", "assets/mailBtn.png");
-    this.load.image("mail_icon", "assets/mail_icon.png");
     this.load.image("mail_rewardBtn", "assets/mail_rewardBtn.png");
     this.load.image("mail_rewardBtnX", "assets/mail_rewardBtnX.png");
     this.load.image("mail_bg2", "assets/mail_bg2.png");
@@ -151,6 +151,17 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('theme_selected', 'assets/theme_selected.png');
     this.load.image('theme_basic', 'assets/theme_basic.png');
     this.load.image('theme_summer', 'assets/theme_summer.png');
+    // BagPopup
+    this.load.image('bag_order', 'assets/bag_order.png');
+    this.load.image('bag_rank', 'assets/bag_rank.png');
+    this.load.image('bag_fav', 'assets/bag_fav.png');
+    this.load.image('bag_star', 'assets/bag_star.png');
+    this.load.image('collection_hidden', 'assets/collection_hidden.png');
+    this.load.image('bag_item_unite', 'assets/bag_item_unite.png');
+    this.load.image('bag_sub_popup', 'assets/bag_sub_popup.png');
+    this.load.image('bag_item_sell', 'assets/bag_item_sell.png');
+    this.load.image('bag_show_sell', 'assets/bag_show_sell.png');
+    this.load.image('item_rank_a', 'assets/item_rank_a.png');
   }
 
   create() {
@@ -176,6 +187,7 @@ export default class GameScene extends Phaser.Scene {
     this.playerState = { coins: 999999, bagSlots: 20, clickLevel: 1 };
     this.storePopup = new StorePopup(this, this.playerState);
     this.themePopup = new ThemePopup(this);
+    this.bagPopup = new BagPopup(this);
   }
 
   createProgressBar() {
@@ -209,6 +221,7 @@ export default class GameScene extends Phaser.Scene {
     if (this.collectionPopup) this.collectionPopup.hidePopup();
     if (this.storePopup) this.storePopup.hide();
     if (this.themePopup) this.themePopup.hide();
+    if (this.bagPopup) this.bagPopup.hide();
 
     switch (label) {
       case '도감':
@@ -220,6 +233,7 @@ export default class GameScene extends Phaser.Scene {
         break;
 
       case '가방':
+        if (this.bagPopup) this.bagPopup.show();
         break;
 
       case '장식장':
