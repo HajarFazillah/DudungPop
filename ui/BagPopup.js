@@ -40,6 +40,12 @@ export default class BagPopup {
         this.cancelChooseBtn = null;
         this.chooseSellBtn = null;
         this.isChooseSellActive = false;
+
+        this.itemCheckboxes = [];
+    }
+
+    hasSelectedItems() {
+        return this.itemCheckboxes.some(d => d.selected);
     }
 
     createPopup() {
@@ -65,7 +71,7 @@ export default class BagPopup {
         const bg = scene.add.image(centerX, centerY, 'popup_bg1')
             .setDisplaySize(this.popupWidth, this.popupHeight);
 
-        // CHOOSE SELL BUTTON
+        // CHOOSE SELL BUTTON (DUAL MODE)
         this.chooseSellBtn = scene.add.image(
             centerX - this.popupWidth / 2 + 380,
             centerY + this.popupHeight / 2 - 40,
@@ -75,14 +81,25 @@ export default class BagPopup {
             .setInteractive({ useHandCursor: true });
 
         this.chooseSellBtn.on('pointerdown', () => {
-            if (!this.isChooseSellActive) {
-                this.isChooseSellActive = true;
-                this.cancelChooseBtn.setVisible(true);
-                this.container.bringToTop(this.cancelChooseBtn);
+
+            // already in choose mode → confirm sell
+            if (this.isChooseSellActive) {
+                if (!this.hasSelectedItems()) return;
+                this.confirmSellContainer.setVisible(true);
+                return;
             }
+
+            // enter choose mode
+            this.isChooseSellActive = true;
+            this.cancelChooseBtn.setVisible(true);
+            this.container.bringToTop(this.cancelChooseBtn);
+
+            this.itemCheckboxes.forEach(({ checkbox }) => {
+                checkbox.setVisible(true);
+            });
         });
 
-        // CANCEL CHOOSE BUTTON (HIDDEN INITIALLY)
+        // CANCEL CHOOSE BUTTON
         this.cancelChooseBtn = scene.add.image(
             centerX - this.popupWidth / 2 + 235,
             centerY + this.popupHeight / 2 - 40,
@@ -96,8 +113,15 @@ export default class BagPopup {
         this.cancelChooseBtn.on('pointerdown', () => {
             this.isChooseSellActive = false;
             this.cancelChooseBtn.setVisible(false);
+
+            this.itemCheckboxes.forEach(data => {
+                data.selected = false;
+                data.checkbox.setVisible(false);
+                data.checkbox.drawCheckbox();
+            });
         });
 
+        // EXIT BUTTON
         const exitBtn = scene.add.image(
             centerX - this.popupWidth / 2 + 32,
             centerY + this.popupHeight / 2 - 32,
@@ -192,6 +216,13 @@ export default class BagPopup {
         ).setScale(2.2).setInteractive({ useHandCursor: true });
 
         sellBtn.on('pointerdown', () => {
+
+            if (this.isChooseSellActive) {
+                if (!this.hasSelectedItems()) return;
+                this.confirmSellContainer.setVisible(true);
+                return;
+            }
+
             this.subPopupContainer.setVisible(false);
             this.confirmSellContainer.setVisible(true);
         });
@@ -199,6 +230,7 @@ export default class BagPopup {
         this.subPopupContainer.add([img, showSell, rankLabel, exitBtn, sellBtn]);
     }
 
+    // ---------- CONFIRM SELL ----------
     createConfirmSellPopup(centerX, centerY) {
         const scene = this.scene;
 
@@ -230,6 +262,15 @@ export default class BagPopup {
             .setInteractive({ useHandCursor: true });
 
         okBtn.on('pointerdown', () => {
+            this.itemCheckboxes.forEach(data => {
+                data.selected = false;
+                data.checkbox.setVisible(false);
+                data.checkbox.drawCheckbox();
+            });
+
+            this.isChooseSellActive = false;
+            this.cancelChooseBtn.setVisible(false);
+
             this.confirmSellContainer.setVisible(false);
             this.getCoinContainer.setVisible(true);
         });
@@ -237,6 +278,7 @@ export default class BagPopup {
         this.confirmSellContainer.add([bg, closeBtn, okBtn]);
     }
 
+    // ---------- GET COIN ----------
     createGetCoinPopup(centerX, centerY) {
         const scene = this.scene;
 
@@ -315,6 +357,8 @@ export default class BagPopup {
         const startX = centerX - ((cols - 1) * (itemW + itemGap)) / 2;
         const startY = viewportTop + itemH / 2 + 8;
 
+        this.itemCheckboxes = [];
+
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
                 const x = startX + col * (itemW + itemGap);
@@ -326,13 +370,52 @@ export default class BagPopup {
                 }
 
                 const item = scene.add.image(x, y, textureKey).setScale(itemScale);
+                item.setInteractive({ useHandCursor: true });
+                item.on('pointerdown', () => {
+                    if (!this.isChooseSellActive) {
+                        this.showSubPopup();
+                    }
+                });
 
-                if (row === 0 && col === 0) {
-                    item.setInteractive({ useHandCursor: true });
-                    item.on('pointerdown', () => this.showSubPopup());
-                }
+                const checkboxSize = 18;
+                const checkboxX = item.x + item.displayWidth / 2 - checkboxSize - 4;
+                const checkboxY = item.y - item.displayHeight / 2 + 4;
 
+                const checkbox = scene.add.graphics();
+                checkbox.setVisible(false);
+
+                const checkboxData = { item, checkbox, selected: false };
+
+                checkbox.drawCheckbox = () => {
+                    checkbox.clear();
+                    checkbox.fillStyle(0xffffff, 1);
+                    checkbox.fillRect(checkboxX, checkboxY, checkboxSize, checkboxSize);
+
+                    if (checkboxData.selected) {
+                        checkbox.lineStyle(3, 0x000000, 1);
+                        checkbox.beginPath();
+                        checkbox.moveTo(checkboxX + 3, checkboxY + checkboxSize / 2);
+                        checkbox.lineTo(checkboxX + checkboxSize / 2 - 1, checkboxY + checkboxSize - 4);
+                        checkbox.lineTo(checkboxX + checkboxSize - 3, checkboxY + 4);
+                        checkbox.strokePath();
+                    }
+                };
+
+                checkbox.drawCheckbox();
+
+                checkbox.setInteractive(
+                    new Phaser.Geom.Rectangle(checkboxX, checkboxY, checkboxSize, checkboxSize),
+                    Phaser.Geom.Rectangle.Contains
+                );
+
+                checkbox.on('pointerdown', () => {
+                    checkboxData.selected = !checkboxData.selected;
+                    checkbox.drawCheckbox();
+                });
+
+                this.itemCheckboxes.push(checkboxData);
                 this.itemsContainer.add(item);
+                this.itemsContainer.add(checkbox);
             }
         }
 
@@ -399,15 +482,22 @@ export default class BagPopup {
 
     hide() {
         if (!this.container) return;
+
         this.container.setVisible(false);
         this.isOpen = false;
         this.isDragging = false;
         this.isChooseSellActive = false;
 
-        if (this.cancelChooseBtn) this.cancelChooseBtn.setVisible(false);
-        if (this.subPopupContainer) this.subPopupContainer.setVisible(false);
-        if (this.confirmSellContainer) this.confirmSellContainer.setVisible(false);
-        if (this.getCoinContainer) this.getCoinContainer.setVisible(false);
+        this.cancelChooseBtn.setVisible(false);
+        this.subPopupContainer.setVisible(false);
+        this.confirmSellContainer.setVisible(false);
+        this.getCoinContainer.setVisible(false);
+
+        this.itemCheckboxes.forEach(data => {
+            data.selected = false;
+            data.checkbox.setVisible(false);
+            data.checkbox.drawCheckbox();
+        });
     }
 
     destroy() {
