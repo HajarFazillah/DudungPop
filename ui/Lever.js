@@ -64,8 +64,8 @@ export default class Lever {
             .setScale(leverConfig.scale)
             .setInteractive({ useHandCursor: true });   // 클릭 가능[web:27]
 
-        this.scene.add.text(centerX - 190, 1170, '1회 뽑기',
-            { fontSize: '20px', color: '#222' }).setOrigin(0.5);
+        this.scene.add.text(centerX - 190, 1180, '1회 뽑기',
+            { fontSize: '30px', fontFamily: 'DoveMayo', color: '#222' }).setOrigin(0.5);
 
         leftLeverImg.on('pointerdown', () => this.handleLeftLeverClick());
 
@@ -76,8 +76,8 @@ export default class Lever {
             .setScale(leverConfig.scale)
             .setInteractive({ useHandCursor: true });
 
-        this.scene.add.text(centerX + 190, 1170, '10회 뽑기',
-            { fontSize: '20px', color: '#222' }).setOrigin(0.5);
+        this.scene.add.text(centerX + 190, 1180, '10회 뽑기',
+            { fontSize: '30px',fontFamily: 'DoveMayo', color: '#222' }).setOrigin(0.5);
 
         rightLeverImg.on('pointerdown', () => this.handleRightLeverClick());
 
@@ -89,7 +89,7 @@ export default class Lever {
         this.checkmark = this.scene.add.text(centerX - 65, 950, '✓', { fontSize: '20px', color: '#000', fontStyle: 'bold' })
             .setOrigin(0.5)
             .setVisible(false);
-        const checkboxLabel = this.scene.add.text(centerX - 40, 1310, '연출 건너뛰기', { fontSize: '20px', color: '#222' })
+        const checkboxLabel = this.scene.add.text(centerX - 40, 1310, '연출 건너뛰기', { fontSize: '25px', fontFamily: 'DoveMayo', color: '#222' })
             .setOrigin(0, 0.5)
             .setInteractive({ useHandCursor: true });
 
