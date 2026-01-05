@@ -5,30 +5,34 @@ export default class StartScene extends Phaser.Scene {
     super('StartScene');
   }
 
+  preload() {
+    this.load.image('start_logo', 'assets/start_logo.png');
+    this.load.image('start_button', 'assets/start_button.png');
+  }
+
   create() {
     console.log("Loaded:", this.scene.key);
 
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
-    this.add.text(centerX, centerY - 100, 'Gacha Game', {
-      fontSize: '48px',
-      fill: '#ffffff',
-    }).setOrigin(0.5);
+    this.cameras.main.setBackgroundColor('#ffffff');
 
-    const startText = this.add.text(centerX, centerY, 'Click Here to Start', {
-      fontSize: '32px',
-      fill: '#00ff00',
-      backgroundColor: '#000000',
-      padding: { x: 20, y: 10 },
-      borderRadius: 10,
-    }).setOrigin(0.5).setInteractive();
+    const logo = this.add.sprite(centerX, centerY - 120, 'start_logo').setOrigin(0.5);
 
-    startText.on('pointerdown', () => {
+    const startButton = this.add.sprite(centerX, centerY + 160, 'start_button').setOrigin(0.5).setInteractive();
+
+    startButton.on('pointerdown', () => {
       this.scene.start('GameScene');
     });
 
-    startText.on('pointerover', () => startText.setStyle({ fill: '#ff0' }));
-    startText.on('pointerout', () => startText.setStyle({ fill: '#00ff00' }));
+    startButton.on('pointerover', () => {
+      startButton.setScale(1.1);
+    });
+
+    startButton.on('pointerout', () => {
+      startButton.setScale(1.0);
+    });
   }
+
 }
