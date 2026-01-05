@@ -15,7 +15,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     parent: 'game-container',                 
   },
-  scene: [StartScene, BootScene, GameScene, PartTimeScene, CollectionPopup, InventoryScene]
+  scene: [BootScene, StartScene, GameScene, PartTimeScene, CollectionPopup, InventoryScene]
 };
 
 const game = new Phaser.Game(config);

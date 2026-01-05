@@ -1,10 +1,46 @@
 import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.esm.js';
 
 export default class BootScene extends Phaser.Scene {
+    create() {
+        this.scene.start('StartScene');   // or 'GameScene'
+    }
     constructor() { super('BootScene'); }
 
     preload() {
         // Preload ALL GameScene assets here (images, audio, atlases)
+        //Lever
+        this.load.image('game_default', 'assets/game_default.png');
+        this.load.image('game_default2', 'assets/game_default2.png');
+        this.load.image('game_lever_default', 'assets/game_lever_default.png');
+        this.load.image('LeftLever', 'assets/LeftLever.png');
+        this.load.image('RightLever', 'assets/RightLever.png');
+        this.load.image("LeverDefault", "assets/game_lever_default.png");
+        this.load.image('CapsuleDrop', 'assets/CapsuleDrop.png');
+        this.load.image('CapsuleOpen',                             'assets/CapsuleOpen.png');
+        this.load.image('CapsuleOpen_Yellow', 'assets/CapsuleOpen_Yellow.png');
+        this.load.image('CapsuleOpen_Blue', 'assets/CapsuleOpen_Blue.png');
+        this.load.image('GachaResult', 'assets/GachaResult.png');
+        //Characters
+
+        this.load.image('Char_Snow', 'assets/Char_Snow.png');
+        this.load.image('char_angryStar', 'assets/char_angryStar.png');
+        this.load.image('char_angryStar2', 'assets/char_angryStar2.png');
+        this.load.image('char_doughnut', 'assets/char_doughnut.png');
+        this.load.image('char_egg', 'assets/char_egg.png');
+        this.load.image('char_frustStar', 'assets/char_frustStar.png');
+        this.load.image('char_ghost', 'assets/char_ghost.png');
+        this.load.image('char_happyStar', 'assets/char_happyStar.png');
+        this.load.image('char_icecream', 'assets/char_icecream.png');
+        this.load.image('char_laughStar', 'assets/char_laughStar.png');
+        this.load.image('char_mugChoco', 'assets/char_mugChoco.png');
+        this.load.image('char_pen', 'assets/char_pen.png');
+        this.load.image('char_ruler', 'assets/char_ruler.png');
+        this.load.image('char_skeleton', 'assets/char_skeleton.png');
+        this.load.image('char_starCandy', 'assets/char_starCandy.png');
+        this.load.image('char_sushi', 'assets/char_sushi.png');
+        this.load.image('char_worryStar', 'assets/char_worryStar.png');
+        this.load.image('char_blackCat', 'assets/char_blackCat.png');
+        this.load.image('char_christmasOrnament', 'assets/char_christmasOrnament.png');
         this.load.image('char_depressedStar', 'assets/char_depressedStar.png');
         this.load.image('char_noMannersStar', 'assets/char_noMannersStar.png');
         this.load.image('char_pancake', 'assets/char_pancake.png');

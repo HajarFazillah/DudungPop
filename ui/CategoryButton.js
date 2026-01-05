@@ -11,7 +11,7 @@ export default class CategoryButton {
 
     // Create button image
     this.bg = scene.add.image(x, y, this.offTexture).setOrigin(0.5);
-    this.bg.setScale(1.5); // adjust size as needed
+    this.bg.setScale(1.4); // adjust size as needed
 
     // If NOT disabled → make interactive
     if (!this.disabled) {

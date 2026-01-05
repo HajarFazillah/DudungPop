@@ -8,7 +8,7 @@ export default class CategoryButtonGroup {
 
     const categories = [
       {
-        x: centerX - 135,
+        x: centerX - 185, 
         label: "cat1",
         off: "cat1BtnOff",
         on: "cat1BtnOn",
@@ -22,7 +22,7 @@ export default class CategoryButtonGroup {
         disabled: false
       },
       {
-        x: centerX + 135,
+        x: centerX + 185,
         label: "cat3",
         off: "cat3BtnOff",
         on: "cat3BtnOn",
