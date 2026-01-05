@@ -82,7 +82,7 @@ export default class ThemePopup {
     const scene = this.scene;
 
     const viewportWidth = 450;
-    const viewportHeight = 520;
+    const viewportHeight = 600;
 
     const viewportX = centerX;
     const viewportY = centerY - 20;
@@ -221,13 +221,93 @@ export default class ThemePopup {
     };
 
     const createHiddenRect = (y) => {
+      const scene = this.scene;
+
+      // 1. Normal base card (same as available ones)
       const base = scene.add.image(centerX, y, 'theme_rect')
         .setDisplaySize(430, 150);
 
-      const overlayImg = scene.add.image(centerX, y, 'theme_hidden')
-        .setDisplaySize(430, 150);
+      // 제목 / 내용 기본 위치
+      const textLeftX = base.x - base.displayWidth / 2 + 30;
 
-      this.themeListContainer.add([base, overlayImg]);
+      const titleText = scene.add.text(
+        textLeftX,
+        y - 40,
+        '기본 장식장',          // 잠긴 테마 이름 (원하면 파라미터로 받기)
+        {
+          fontSize: '22px',
+          color: '#000000',
+          fontFamily: 'DoveMayoBold',
+          align: 'left'
+        }
+      ).setOrigin(0, 0.5);
+
+      const descText = scene.add.text(
+        textLeftX,
+        y + 20,
+        '설명설명설명 설명설명설명 설명설명설명 설명설명설명\n설명설명설명 설명설명설명',
+        {
+          fontSize: '18px',
+          color: '#000000',
+          fontFamily: 'DoveMayo',
+          align: 'left',
+          wordWrap: { width: base.displayWidth * 0.55 }
+        }
+      ).setOrigin(0, 0.5);
+
+      // 2. Dark translucent overlay (covers the card)
+      const overlay = scene.add.rectangle(
+        base.x,
+        y,
+        base.displayWidth,
+        base.displayHeight,
+        0x000000,
+        0.6          // 반투명
+      );
+
+      // 3. “플레이타임 240시간 이후 오픈” 텍스트
+      const lockText = scene.add.text(
+        base.x - base.displayWidth / 2 + 40,
+        y,
+        '플레이타임 240시간 이후 오픈',
+        {
+          fontSize: '18px',
+          color: '#ffffff',
+          fontFamily: 'DoveMayo',
+          align: 'left'
+        }
+      ).setOrigin(0, 0.5);
+
+      const btnX = base.x + base.displayWidth / 2 - 85;
+
+      const btn = scene.add.image(btnX, y, 'theme_rect_btn')
+        .setScale(1.5);
+
+      const btnLabel = scene.add.text(
+        btn.x,
+        btn.y,
+        '변경하기',
+        {
+          fontSize: '18px',
+          color: '#000000',
+          fontFamily: 'DoveMayo',
+          align: 'center'
+        }
+      ).setOrigin(0.5);
+
+      btn.disableInteractive();
+      btnLabel.disableInteractive();
+
+      // 5. Add everything in the right order (base + texts, then overlay + lock text)
+      this.themeListContainer.add([
+        base,
+        titleText,
+        descText,
+        btn,
+        btnLabel,
+        overlay,
+        lockText
+      ]);
     };
 
     createHiddenRect(startY);
