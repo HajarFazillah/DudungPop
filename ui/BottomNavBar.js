@@ -1,5 +1,5 @@
 export default class BottomNavBar {
-  constructor(scene, navY = 1100, onButtonClicked = null) {
+  constructor(scene, navY = 1500, onButtonClicked = null) {
     this.scene = scene;
     this.navY = navY;
     this.circleRadius = 55;
@@ -57,9 +57,9 @@ export default class BottomNavBar {
     // === RIGHT ARROW (image) ===
     const rightArrow = this.scene.add.image(
       startXNav +
-        (this.n - 1) * (this.circleRadius * 2 + this.circleGap) +
-        this.circleRadius +
-        arrowOffset,
+      (this.n - 1) * (this.circleRadius * 2 + this.circleGap) +
+      this.circleRadius +
+      arrowOffset,
       navY,
       'navbar_right'
     )
