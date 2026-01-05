@@ -5,10 +5,22 @@
   <title>Gacha Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    @font-face {
+      font-family: 'DoveMayo';
+      src: url('assets/font/dovemayo.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+  </style>
 </head>
 <body>
   <!-- Phaser game will be rendered here -->
   <div id="game-container"></div>
+  
+  <!-- Hidden font preloaders -->
+  <div style="font-family: 'DoveMayo'; position: absolute; left: -10000px; visibility: hidden;">.</div>
+  
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
