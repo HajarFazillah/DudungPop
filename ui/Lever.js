@@ -86,7 +86,7 @@ export default class Lever {
         this.checkboxRect = this.scene.add.rectangle(centerX - 65, 1310, 24, 24, 0xffffff)
             .setStrokeStyle(1, 0x222222)
             .setInteractive({ useHandCursor: true });
-        this.checkmark = this.scene.add.text(centerX - 65, 950, '✓', { fontSize: '20px', color: '#000', fontStyle: 'bold' })
+        this.checkmark = this.scene.add.text(centerX - 65, 1310, '✓', { fontSize: '20px', color: '#000', fontStyle: 'bold' })
             .setOrigin(0.5)
             .setVisible(false);
         const checkboxLabel = this.scene.add.text(centerX - 40, 1310, '연출 건너뛰기', { fontSize: '25px', fontFamily: 'DoveMayo', color: '#222' })
