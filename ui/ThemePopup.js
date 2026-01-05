@@ -150,7 +150,6 @@ export default class ThemePopup {
       btnLabel.setInteractive({ useHandCursor: true });
       btnLabel.on('pointerdown', () => btn.emit('pointerdown'));
 
-
       this.themeListContainer.add(rect);
 
       // --- rect1: REPLACE theme_basic.png with text blocks ---
@@ -233,7 +232,7 @@ export default class ThemePopup {
 
     createHiddenRect(startY);
     createThemeRect(startY + gapY, 'rect1');
-    createThemeRect(startY + gapY * 2, 'rect2'); // rect2 now uses texts instead of theme_summer
+    createThemeRect(startY + gapY * 2, 'rect2');
     createHiddenRect(startY + gapY * 3);
 
     const contentHeight = (gapY * 3) + rowHeight;

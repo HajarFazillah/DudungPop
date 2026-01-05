@@ -92,7 +92,7 @@ export default class CollectionPopup {
       this.totalBg.x + this.totalBg.displayWidth * 0.01,
       this.totalBg.y,
       '4 / 12',
-      { fontSize: '16px', color: '#000000', fontFamily: 'Arial' }
+      { fontSize: '16px', color: '#000000', fontFamily: 'DoveMayo' }
     ).setOrigin(0, 0.5);
 
     // Tabs
@@ -174,7 +174,7 @@ export default class CollectionPopup {
         fontSize: '22px',
         fontStyle: 'bold',
         color: '#000000',
-        fontFamily: 'Arial'
+        fontFamily: 'DoveMayo'
       }).setOrigin(0.5);
       exitContainer.add([exitGfx, exitText]);
       exitContainer.setSize(30, 30);
@@ -435,7 +435,7 @@ export default class CollectionPopup {
       const nameText = scene.add.text(centerX - this.listBgWidth / 2 + 20, y, item.name, {
         fontSize: '16px',
         color: item.locked ? '#aaaaaa' : '#000000',
-        fontFamily: 'Arial'
+        fontFamily: 'DoveMayo'
       }).setOrigin(0, 0.5);
 
       this.scrollContainer.add([rowBg, nameText]);
@@ -560,7 +560,7 @@ export default class CollectionPopup {
       {
         fontSize: '22px',
         color: '#000000',
-        fontFamily: 'Arial'
+        fontFamily: 'DoveMayo'
       }
     ).setOrigin(0.5);
 
@@ -585,7 +585,7 @@ export default class CollectionPopup {
       {
         fontSize: '16px',
         color: '#000000',
-        fontFamily: 'Arial',
+        fontFamily: 'DoveMayo',
         wordWrap: { width: storyBg.displayWidth - 40 }
       }
     ).setOrigin(0, 0);
