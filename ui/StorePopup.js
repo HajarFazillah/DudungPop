@@ -188,7 +188,7 @@ export default class StorePopup {
       {
         fontSize: '20px',
         color: '#000000',
-        fontFamily: 'Arial',
+        fontFamily: 'DoveMayo',
         align: 'left',
         wordWrap: { width: bg.displayWidth * 0.55 }
       }
@@ -213,7 +213,7 @@ export default class StorePopup {
       {
         fontSize: '18px',
         color: '#000000',
-        fontFamily: 'Arial'
+        fontFamily: 'DoveMayo'
       }
     ).setOrigin(0.5);
 
@@ -268,7 +268,7 @@ export default class StorePopup {
         {
           fontSize: '18px',
           color: '#ffffff',
-          fontFamily: 'Arial'
+          fontFamily: 'DoveMayo'
         }
       ).setOrigin(0, 0.5);
 
@@ -280,7 +280,7 @@ export default class StorePopup {
         {
           fontSize: '18px',
           color: '#000000',
-          fontFamily: 'Arial'
+          fontFamily: 'DoveMayo'
         }
       ).setOrigin(0.5);
 
