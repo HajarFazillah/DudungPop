@@ -12,7 +12,12 @@ export default class InventoryScene extends Phaser.Scene {
   }
 
   preload() {
-    // Load sample item images (you can adjust these)
+    // Inventory UI images
+    this.load.image('inventory_frame', 'assets/inventory_frame.png');
+    this.load.image('inv_itembg', 'assets/inv_itembg.png');
+    this.load.image('inv_itemadd', 'assets/inv_itemadd.png');
+
+    // Optional (keep only if you will use them later in this scene)
     this.load.image('Char_Cake', 'assets/char_pancake.png');
     this.load.image('Char_Snow', 'assets/Char_Snow.png');
     this.load.image('Char_Cat', 'assets/char_blackCat.png');
@@ -20,59 +25,90 @@ export default class InventoryScene extends Phaser.Scene {
   }
 
   create() {
-    console.log("Loaded:", this.scene.key);
+    console.log('Loaded:', this.scene.key);
 
-    const centerX = this.cameras.main.centerX;
-    const centerY = this.cameras.main.centerY;
-    const offsetY = -100;
+    const cx = this.cameras.main.centerX;
+    const cy = this.cameras.main.centerY;
+
+    this.cameras.main.setBackgroundColor('#ffffff');
 
     // === UI Components ===
-    const startX = centerX - 240;
-    const startY = 40;
+    const uiStartX = cx - 240;
+    const uiStartY = 40;
 
-    this.topButtonBar = new TopButtonBar(this, startX, startY);
+    this.topButtonBar = new TopButtonBar(this, uiStartX, uiStartY);
+
     this.collectionPopup = new CollectionPopup(this);
     this.collectionPopup.createPopup();
+
     this.storePopup = new StorePopup(this);
     this.themePopup = new ThemePopup(this);
     this.bagPopup = new BagPopup(this);
-    this.bottomNavBar = new BottomNavBar(this, 1100, this.onNavButtonClicked.bind(this));
 
-    // === Inventory Box ===
-    const boxWidth = 550;
-    const boxHeight = 750;
-    const box = this.add.rectangle(centerX, centerY + 20 + offsetY, boxWidth, boxHeight, 0xf5f5f5)
-      .setStrokeStyle(2, 0x000000);
+    // Bottom nav bar y-position you are using
+    const bottomNavY = 1200;
 
-    // === Grid of Items ===
+    this.bottomNavBar = new BottomNavBar(
+      this,
+      bottomNavY,
+      this.onNavButtonClicked.bind(this)
+    );
+
+    // === Inventory Frame ===
+    const frameW = 550;
+    const frameH = 950;
+    const frameMarginAboveNav = 80;
+
+    const frameY = bottomNavY - frameMarginAboveNav - frameH / 2;
+
+    this.inventoryFrame = this.add.image(cx, frameY, 'inventory_frame')
+      .setOrigin(0.5)
+      .setDisplaySize(frameW, frameH);
+
+    // === Inventory slots ===
+    const frame = this.inventoryFrame;
+
     const cols = 3;
-    const rows = 7;
-    const cellWidth = 150;
-    const cellHeight = 100;
-    const startGridX = centerX - (cols - 1) * (cellWidth / 2);
-    const startGridY = centerY - (rows / 2) * cellHeight + 60 + offsetY;
+    const rows = 6;
 
-    const itemKeys = ['Char_Cake', 'Char_Snow', 'Char_Cat', 'Char_Happy'];
+    // Padding inside the frame (tweak to match your PNG margins)
+    const padLeft = 105;
+    const padTop = 100;
 
-    let itemIndex = 0;
+    // Spacing between slots (tweak)
+    const gapX = 170;
+    const gapY = 150;
 
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const x = startGridX + col * cellWidth;
-        const y = startGridY + row * cellHeight;
+    // Top-left slot position (based on frame size)
+    const gridStartX = frame.x - frame.displayWidth / 2 + padLeft;
+    const gridStartY = frame.y - frame.displayHeight / 2 + padTop;
 
-        // Box frame for each item
-        const slot = this.add.rectangle(x, y, 120, 90, 0xffffff)
-          .setStrokeStyle(1, 0x999999);
+    this.invSlots = [];
+    this.invSlotIcons = [];
 
-        // Item image
-        const key = itemKeys[itemIndex % itemKeys.length];
-        const item = this.add.image(x, y, key).setDisplaySize(70, 70);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = gridStartX + c * gapX;
+        const y = gridStartY + r * gapY;
 
-        itemIndex++;
+        const isFirstSlot = (r === 0 && c === 0);
+        const slotKey = isFirstSlot ? 'inv_itembg' : 'inv_itemadd';
+
+        const slot = this.add.image(x, y, slotKey)
+          .setOrigin(0.5)
+          .setScale(1.8);
+
+        this.invSlots.push(slot);
+
+        if (isFirstSlot) {
+          const icon = this.add.image(x, y, 'Char_Cake')
+            .setOrigin(0.5)
+            .setDisplaySize(90, 90);
+
+          this.invSlotIcons.push(icon);
+        }
       }
     }
-
   }
 
   onNavButtonClicked(label) {
@@ -85,19 +121,15 @@ export default class InventoryScene extends Phaser.Scene {
       case '도감':
         if (this.collectionPopup) this.collectionPopup.showPopup();
         break;
-
       case '상점':
         if (this.storePopup) this.storePopup.show();
         break;
-
       case '가방':
         if (this.bagPopup) this.bagPopup.show();
         break;
-
       case '장식장':
         if (this.themePopup) this.themePopup.show();
         break;
     }
   }
-
-} 
+}
