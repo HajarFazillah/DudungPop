@@ -58,8 +58,8 @@ export default class QuestPopup {
     const iconSize = 70;
     const gap = 18;
 
-    // NEW: add a slight vertical gap between title text and progress bar
-    const textToBarGap = 6; // try 4~10 for your preferred spacing
+    // Gap between title text and progress bar
+    const textToBarGap = 6; // tweak 4~10
 
     // === Shared text styles (DoveMayo) ===
     const styleTimer = { fontSize: '18px', color: '#444', fontFamily: 'DoveMayo' };
@@ -159,6 +159,13 @@ export default class QuestPopup {
     allQuests.forEach((quest, idx) => {
       let baseY;
 
+      // Decide which icon to show (no rectangle background anymore)
+      let buttonImgKey;
+      if (quest.status === "진행중") buttonImgKey = "quest_coin";
+      else if (quest.status === "완료") buttonImgKey = "quest_claim";
+      else if (quest.status === "수령") buttonImgKey = "quest_claimed";
+      else buttonImgKey = "quest_coin";
+
       if (idx === 0) {
         // Weekly quest
         baseY = firstBoxStartY
@@ -185,7 +192,7 @@ export default class QuestPopup {
             .setOrigin(0.5, 0)
         );
 
-        // Progress bar (moved DOWN slightly by textToBarGap)
+        // Progress bar (moved down a bit)
         const pbY = baseY + 25 + textToBarGap;
 
         const pbBg = this.scene.add.rectangle(
@@ -207,30 +214,7 @@ export default class QuestPopup {
         ).setOrigin(0, 0.5);
         this.popup.add(pbFill);
 
-        // Reward button
-        let buttonImgKey;
-        let bgColor;
-
-        if (quest.status === "진행중") {
-          buttonImgKey = "quest_coin";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "완료") {
-          buttonImgKey = "quest_claim";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "수령") {
-          buttonImgKey = "quest_claimed";
-          bgColor = 0x222222;
-        }
-
-        const btnBg = this.scene.add.rectangle(
-          questBoxWidth / 2 - 40,
-          baseY + 5,
-          iconSize,
-          iconSize,
-          bgColor
-        ).setOrigin(0.5);
-        this.popup.add(btnBg);
-
+        // Reward icon ONLY (no outer rectangle)
         const btnImg = this.scene.add.image(
           questBoxWidth / 2 - 40,
           baseY + 5,
@@ -256,7 +240,7 @@ export default class QuestPopup {
             .setOrigin(0, 0.5)
         );
 
-        // Progress bar (moved DOWN slightly by textToBarGap)
+        // Progress bar (moved down a bit)
         const pbY = baseY + 18 + textToBarGap;
 
         const pbBg = this.scene.add.rectangle(
@@ -278,30 +262,7 @@ export default class QuestPopup {
         ).setOrigin(0, 0.5);
         this.popup.add(pbFill);
 
-        // Reward button
-        let buttonImgKey;
-        let bgColor;
-
-        if (quest.status === "진행중") {
-          buttonImgKey = "quest_coin";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "완료") {
-          buttonImgKey = "quest_claim";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "수령") {
-          buttonImgKey = "quest_claimed";
-          bgColor = 0x222222;
-        }
-
-        const btnBg = this.scene.add.rectangle(
-          questBoxWidth / 2 - 40,
-          baseY + 2,
-          iconSize,
-          iconSize,
-          bgColor
-        ).setOrigin(0.5);
-        this.popup.add(btnBg);
-
+        // Reward icon ONLY (no outer rectangle)
         const btnImg = this.scene.add.image(
           questBoxWidth / 2 - 40,
           baseY + 2,
@@ -312,10 +273,11 @@ export default class QuestPopup {
     });
 
     // --- X Button Bottom Left ---
+    const exitOffsetY = -9;
     const xBtnSize = 38;
     const closeBtn = this.scene.add.image(
       -bgWidth / 1.9 + xBtnSize,
-      bgHeight / 1.9 - xBtnSize,
+      bgHeight / 1.9 - xBtnSize + exitOffsetY,
       "exit_button"
     ).setOrigin(0.5).setDisplaySize(xBtnSize, xBtnSize).setInteractive({ useHandCursor: true });
 
