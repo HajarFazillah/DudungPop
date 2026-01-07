@@ -50,7 +50,7 @@ export default class GameScene extends Phaser.Scene {
     this.progressBarBg = this.add.rectangle(centerX, 1250, 370, 11, 0xffffff).setStrokeStyle(1, 0x1a1a1a);
     this.progressBarFill_maxWidth = 370;
     const fillLeft = centerX - 370 / 2;  // Fill: x := left edge
-    this.progressBarFill = this.add.rectangle(fillLeft, 1200, 0, 11, 0x333333).setOrigin(0, 0.5);
+    this.progressBarFill = this.add.rectangle(fillLeft, 1250, 0, 11, 0x333333).setOrigin(0, 0.5);
     if (this.progressLabel) this.progressLabel.destroy(); // prevent duplicate
     this.progressLabel = this.add.text(centerX, 1230, 'A등급 이상 확정까지 101회', { fontSize: '25px', fontFamily: 'DoveMayo', color: '#222' }).setOrigin(0.5);
   }  
