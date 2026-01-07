@@ -9,40 +9,26 @@ export default class QuestPopup {
 
   show(questData) {
     // Clean up previous popup
-    if (this.popupLayer) {
-      this.popupLayer.destroy(true);
-      this.popupLayer = null;
-    }
-    if (this.popup) {
-      this.popup.destroy(true);
-      this.popup = null;
-    }
-    if (this.timerEvent) {
-      this.timerEvent.remove();
-      this.timerEvent = null;
-    }
+    if (this.popupLayer) { this.popupLayer.destroy(true); this.popupLayer = null; }
+    if (this.popup) { this.popup.destroy(true); this.popup = null; }
+    if (this.timerEvent) { this.timerEvent.remove(); this.timerEvent = null; }
 
-    // Calculate center for popup
     const cam = this.scene.cameras.main;
     const centerX = cam.centerX;
     const centerY = cam.centerY;
 
-    // layer that holds overlay + popup
+    // Layer that holds overlay + popup
     this.popupLayer = this.scene.add.container(0, 0);
 
-    // full-screen dim overlay
     const overlay = this.scene.add.rectangle(
-      cam.centerX,
-      cam.centerY,
-      this.scene.scale.width,
-      this.scene.scale.height,
-      0x000000,
-      0.5
+      cam.centerX, cam.centerY,
+      this.scene.scale.width, this.scene.scale.height,
+      0x000000, 0.5
     ).setOrigin(0.5).setInteractive();
 
     this.popupLayer.add(overlay);
 
-    // popup container on top of overlay
+    // Popup container on top of overlay
     this.popup = this.scene.add.container(centerX, centerY);
     this.popupLayer.add(this.popup);
 
@@ -57,57 +43,49 @@ export default class QuestPopup {
     const progressBarWidth = 260;
     const progressBarHeight = 13;
     const iconSize = 70;
-    const gap = 18; // spacing between boxes
+    const gap = 18;
 
-    // === Shared text styles (DoveMayo) ===
+    // Gap between title text and progress bar
+    const textToBarGap = 6;
+
+    // Shared text styles (DoveMayo)
     const styleTimer = { fontSize: '18px', color: '#444', fontFamily: 'DoveMayo' };
     const styleMd = { fontSize: `${fontMd}px`, color: '#222222', fontFamily: 'DoveMayo' };
     const styleLg = { fontSize: `${fontLg}px`, color: '#222222', fontFamily: 'DoveMayo' };
     const styleLgBold = { fontSize: `${fontLg}px`, color: '#222222', fontFamily: 'DoveMayoBold' };
 
-    // Blocker (cover full screen, not just bg size)
+    // Blocker (cover full screen)
     const blocker = this.scene.add.rectangle(
-      0,
-      0,
-      this.scene.scale.width,
-      this.scene.scale.height,
-      0x000000,
-      0
+      0, 0,
+      this.scene.scale.width, this.scene.scale.height,
+      0x000000, 0
     ).setOrigin(0.5).setInteractive();
 
     this.popup.add(blocker);
 
-    // Popup background image (same as Mail / Notice)
+    // Popup background
     const bg = this.scene.add.image(0, 0, 'popup_bg1')
-      .setOrigin(0.5)
-      .setDisplaySize(bgWidth, bgHeight);
+      .setOrigin(0.5).setDisplaySize(bgWidth, bgHeight);
 
     this.popup.add(bg);
 
     // Timer (top right)
     const timerText = this.scene.add.text(
-      bgWidth / 2 - 95,
-      -bgHeight / 2 + 25,
-      '',
-      styleTimer
+      bgWidth / 2 - 95, -bgHeight / 2 + 25, '', styleTimer
     );
     this.popup.add(timerText);
 
     const timerIcon = this.scene.add.circle(
-      bgWidth / 2 - 115,
-      -bgHeight / 2 + 32,
-      12,
-      0xffffff
+      bgWidth / 2 - 115, -bgHeight / 2 + 32, 12, 0xffffff
     ).setStrokeStyle(1, 0x444444);
-
     this.popup.add(timerIcon);
 
     // Timer update (KST)
-    function getKSTTime() {
+    const getKSTTime = () => {
       const now = new Date();
       const utc = now.getTime() + now.getTimezoneOffset() * 60000;
       return new Date(utc + 9 * 3600000);
-    }
+    };
 
     const updateTimer = () => {
       const now = getKSTTime();
@@ -120,19 +98,13 @@ export default class QuestPopup {
       const m = Math.floor((seconds % 3600) / 60);
       const s = seconds % 60;
 
-      timerText.setText(
-        `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-      );
+      timerText.setText(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
     };
 
     updateTimer();
-    this.timerEvent = this.scene.time.addEvent({
-      delay: 1000,
-      callback: updateTimer,
-      loop: true
-    });
+    this.timerEvent = this.scene.time.addEvent({ delay: 1000, callback: updateTimer, loop: true });
 
-    // --- Unified Quest List ---
+    // Unified quest list
     const allQuests = [
       {
         title: questData.weekly.title,
@@ -150,7 +122,7 @@ export default class QuestPopup {
       }))
     ];
 
-    // --- Center all quest boxes within the background ---
+    // Center all quest boxes within the background
     const n = allQuests.length;
     const totalBoxesHeight = weeklyBoxHeight + (n - 1) * questBoxHeight;
     const firstBoxStartY = -totalBoxesHeight / 2 + weeklyBoxHeight / 2 + gap;
@@ -158,171 +130,88 @@ export default class QuestPopup {
     allQuests.forEach((quest, idx) => {
       let baseY;
 
+      // Decide which icon to show
+      let buttonImgKey = "quest_coin";
+      if (quest.status === "완료") buttonImgKey = "quest_claim";
+      else if (quest.status === "수령") buttonImgKey = "quest_claimed";
+
       if (idx === 0) {
         // Weekly quest
-        baseY = firstBoxStartY
-          + weeklyBoxHeight / 4
-          + (idx - 1) * (questBoxHeight + gap)
-          + questBoxHeight / 3;
+        baseY = firstBoxStartY + weeklyBoxHeight / 4 + (idx - 1) * (questBoxHeight + gap) + questBoxHeight / 3;
 
         const questBg = this.scene.add.image(0, baseY, 'quest_bg1')
-          .setOrigin(0.5)
-          .setDisplaySize(questBoxWidth, weeklyBoxHeight);
-
+          .setOrigin(0.5).setDisplaySize(questBoxWidth, weeklyBoxHeight);
         this.popup.add(questBg);
 
-        // "월요일 보상"
         this.popup.add(
-          this.scene.add.text(0, baseY - weeklyBoxHeight / 2 + 20, '월요일 보상', styleMd)
+          this.scene.add.text(0, baseY - weeklyBoxHeight / 2 + 20, '월요일 보상', { ...styleMd, color: '#ffffff' })
             .setOrigin(0.5)
         );
 
-        // Title (centered below)
         this.popup.add(
           this.scene.add.text(0, baseY - weeklyBoxHeight / 2 + 42, quest.title, styleLgBold)
             .setOrigin(0.5, 0)
         );
 
-        // Progress bar
-        const pbBg = this.scene.add.rectangle(
-          -questBoxWidth / 2 + 40,
-          baseY + 25,
-          progressBarWidth,
-          progressBarHeight,
-          0xffffff
-        ).setOrigin(0, 0.5).setStrokeStyle(1, 0x666666);
+        const pbY = baseY + 25 + textToBarGap;
+
+        const pbBg = this.scene.add.rectangle(-questBoxWidth / 2 + 40, pbY, progressBarWidth, progressBarHeight, 0xffffff)
+          .setOrigin(0, 0.5).setStrokeStyle(1, 0x666666);
         this.popup.add(pbBg);
 
         const progress = Math.max(0, Math.min(1, quest.curValue / quest.goalValue));
-        const pbFill = this.scene.add.rectangle(
-          -questBoxWidth / 2 + 40,
-          baseY + 25,
-          progress * progressBarWidth,
-          progressBarHeight,
-          0x000000
-        ).setOrigin(0, 0.5);
+        const pbFill = this.scene.add.rectangle(-questBoxWidth / 2 + 40, pbY, progress * progressBarWidth, progressBarHeight, 0x000000)
+          .setOrigin(0, 0.5);
         this.popup.add(pbFill);
 
-        // Reward button
-        let buttonImgKey;
-        let bgColor;
-
-        if (quest.status === "진행중") {
-          buttonImgKey = "quest_coin";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "완료") {
-          buttonImgKey = "quest_claim";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "수령") {
-          buttonImgKey = "quest_claimed";
-          bgColor = 0x222222;
-        }
-
-        const btnBg = this.scene.add.rectangle(
-          questBoxWidth / 2 - 40,
-          baseY + 5,
-          iconSize,
-          iconSize,
-          bgColor
-        ).setOrigin(0.5);
-        this.popup.add(btnBg);
-
-        const btnImg = this.scene.add.image(
-          questBoxWidth / 2 - 40,
-          baseY + 5,
-          buttonImgKey
-        ).setDisplaySize(iconSize * 0.8, iconSize * 0.8);
+        const btnImg = this.scene.add.image(questBoxWidth / 2 - 40, baseY + 5, buttonImgKey)
+          .setDisplaySize(iconSize * 0.8, iconSize * 0.8);
         this.popup.add(btnImg);
 
       } else {
         // Regular quests
-        baseY = firstBoxStartY
-          + weeklyBoxHeight / 4
-          + (idx - 1) * (questBoxHeight + gap)
-          + questBoxHeight / 2;
+        baseY = firstBoxStartY + weeklyBoxHeight / 4 + (idx - 1) * (questBoxHeight + gap) + questBoxHeight / 2;
 
         const questBg = this.scene.add.image(0, baseY, 'quest_bg2')
-          .setOrigin(0.5)
-          .setDisplaySize(questBoxWidth, questBoxHeight);
+          .setOrigin(0.5).setDisplaySize(questBoxWidth, questBoxHeight);
         this.popup.add(questBg);
 
-        // Title (left)
         this.popup.add(
           this.scene.add.text(-questBoxWidth / 2 + 40, baseY, quest.title, styleLg)
             .setOrigin(0, 0.5)
         );
 
-        // Progress bar
-        const pbBg = this.scene.add.rectangle(
-          -questBoxWidth / 2 + 40,
-          baseY + 18,
-          progressBarWidth,
-          progressBarHeight,
-          0xffffff
-        ).setOrigin(0, 0.5).setStrokeStyle(1, 0x666666);
+        const pbY = baseY + 18 + textToBarGap;
+
+        const pbBg = this.scene.add.rectangle(-questBoxWidth / 2 + 40, pbY, progressBarWidth, progressBarHeight, 0xffffff)
+          .setOrigin(0, 0.5).setStrokeStyle(1, 0x666666);
         this.popup.add(pbBg);
 
         const progress = Math.max(0, Math.min(1, quest.curValue / quest.goalValue));
-        const pbFill = this.scene.add.rectangle(
-          -questBoxWidth / 2 + 40,
-          baseY + 18,
-          progress * progressBarWidth,
-          progressBarHeight,
-          0x000000
-        ).setOrigin(0, 0.5);
+        const pbFill = this.scene.add.rectangle(-questBoxWidth / 2 + 40, pbY, progress * progressBarWidth, progressBarHeight, 0x000000)
+          .setOrigin(0, 0.5);
         this.popup.add(pbFill);
 
-        // Reward button
-        let buttonImgKey;
-        let bgColor;
-
-        if (quest.status === "진행중") {
-          buttonImgKey = "quest_coin";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "완료") {
-          buttonImgKey = "quest_claim";
-          bgColor = 0xdadbdb;
-        } else if (quest.status === "수령") {
-          buttonImgKey = "quest_claimed";
-          bgColor = 0x222222;
-        }
-
-        const btnBg = this.scene.add.rectangle(
-          questBoxWidth / 2 - 40,
-          baseY + 2,
-          iconSize,
-          iconSize,
-          bgColor
-        ).setOrigin(0.5);
-        this.popup.add(btnBg);
-
-        const btnImg = this.scene.add.image(
-          questBoxWidth / 2 - 40,
-          baseY + 2,
-          buttonImgKey
-        ).setDisplaySize(iconSize * 0.8, iconSize * 0.8);
+        const btnImg = this.scene.add.image(questBoxWidth / 2 - 40, baseY + 2, buttonImgKey)
+          .setDisplaySize(iconSize * 0.8, iconSize * 0.8);
         this.popup.add(btnImg);
       }
     });
 
-    // --- X Button Bottom Left Using Image ---
+    // X Button Bottom Left
+    const exitOffsetY = -9;
     const xBtnSize = 38;
+
     const closeBtn = this.scene.add.image(
       -bgWidth / 1.9 + xBtnSize,
-      bgHeight / 1.9 - xBtnSize,
+      bgHeight / 1.9 - xBtnSize + exitOffsetY,
       "exit_button"
     ).setOrigin(0.5).setDisplaySize(xBtnSize, xBtnSize).setInteractive({ useHandCursor: true });
 
     closeBtn.on('pointerdown', () => {
-      if (this.popupLayer) {
-        this.popupLayer.destroy(true);
-        this.popupLayer = null;
-      }
+      if (this.popupLayer) { this.popupLayer.destroy(true); this.popupLayer = null; }
       this.popup = null;
-      if (this.timerEvent) {
-        this.timerEvent.remove();
-        this.timerEvent = null;
-      }
+      if (this.timerEvent) { this.timerEvent.remove(); this.timerEvent = null; }
     });
 
     this.popup.add(closeBtn);
