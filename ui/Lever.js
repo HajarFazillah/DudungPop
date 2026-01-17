@@ -138,7 +138,7 @@ export default class Lever {
         if (imageName === "Gacha Result") {
             bg = this.scene.add.image(0, 0, 'result_bg')
                 .setOrigin(0.5)
-                .setDisplaySize(400, 400);
+                .setDisplaySize(600, 700);
             this.popup.add(bg);
         }
 
@@ -150,10 +150,13 @@ export default class Lever {
             // make capsule bigger
             width = 400;      // try 400~450
             height = 400;
+            this.scene.sound.play('CapsuleOpen', {
+                volume: this.scene.sfxVolume || 1.0
+            });
         } else if (imageName === "Gacha Result") {
             // character slightly smaller than capsule
-            width = 260;
-            height = 260;
+            width = 400;
+            height = 400;
         }
 
         const mainImg = this.scene.add.image(0, 0, imgKey).setDisplaySize(width, height);
@@ -161,7 +164,7 @@ export default class Lever {
 
         if (imageName === "Gacha Result") {
             // 3) Confirm button
-            const confirmBtn = this.scene.add.image(0, 120, 'lever_confirm_button')
+            const confirmBtn = this.scene.add.image(0, 300, 'lever_confirm_button')
                 .setOrigin(0.5)
                 .setInteractive({ useHandCursor: true });
 
@@ -212,9 +215,12 @@ export default class Lever {
 
         // Show initial lever animation
         const centerX = this.scene.cameras.main.centerX;
-        const centerY = this.scene.cameras.main.centerX;
-        this.popup = this.scene.add.container(centerX, centerY);
-        const leverImg = this.scene.add.image(0, 0, 'RightLever').setDisplaySize(220, 220).setInteractive({ useHandCursor: true });
+        // use createPopupWithOverlay so dim background appears
+        this.popup = this.createPopupWithOverlay(centerX, this.scene.cameras.main.centerY);
+
+        const leverImg = this.scene.add.image(0, 0, 'LeftLever')   // or 'RightLever' if you have a separate asset
+            .setDisplaySize(300, 300)                              // same size as left lever turn
+            .setInteractive({ useHandCursor: true });
         this.popup.add(leverImg);
 
         leverImg.once('pointerdown', () => {
@@ -253,7 +259,10 @@ export default class Lever {
                 capsuleImg.setInteractive({ useHandCursor: true });
                 capsuleImg.once('pointerdown', () => {
                     capsuleImg.setVisible(false);
-                    const charImg = this.scene.add.image(0, 0, charKey).setDisplaySize(220, 220);
+                    this.scene.sound.play('CapsuleOpen', {
+                        volume: this.scene.sfxVolume || 1.0
+                    });
+                    const charImg = this.scene.add.image(0, 0, charKey).setDisplaySize(400, 400);
                     this.popup.add(charImg);
                     charImg.setInteractive({ useHandCursor: true });
 
@@ -276,30 +285,34 @@ export default class Lever {
         this.createPopupWithOverlay();
         const bg = this.scene.add.image(0, 0, 'result_bg')
             .setOrigin(0.5)
-            .setDisplaySize(400, 400);
+            .setDisplaySize(600, 700);
         this.popup.add(bg);
 
         // Display characters grid
         const rowSizes = [4, 4, 2];
         let itemIndex = 0;
+        const itemSpacingX = 140;      //spacing
+        const itemSpacingY = 150;      // vertical spacing
+        const startY = -150;           // starting Y of first row
+
         for (let row = 0; row < rowSizes.length; row++) {
             const itemsInRow = rowSizes[row];
-            const rowWidth = (itemsInRow - 1) * 90;
+            const rowWidth = (itemsInRow - 1) * itemSpacingX;
             const startX = -rowWidth / 2;
+            const y = startY + row * itemSpacingY;
 
             for (let col = 0; col < itemsInRow; col++) {
                 if (itemIndex >= this.gachaResults.length) break;
-                const x = startX + col * 90;
-                const y = -130 + row * 130;
+                const x = startX + col * itemSpacingX;
                 const char = this.scene.add.image(x, y, this.gachaResults[itemIndex]);
-                char.setDisplaySize(100, 100);
+                char.setDisplaySize(200, 200);
                 this.popup.add(char);
                 itemIndex++;
             }
         }
 
         // Confirm button image
-        const confirmBtn = this.scene.add.image(0, 170, 'lever_confirm_button')
+        const confirmBtn = this.scene.add.image(0, 260, 'lever_confirm_button')
             .setOrigin(0.5)
             .setInteractive({ useHandCursor: true });
 

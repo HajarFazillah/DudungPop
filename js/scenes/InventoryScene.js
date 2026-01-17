@@ -5,6 +5,7 @@ import StorePopup from '/ui/StorePopup.js';
 import BottomNavBar from '/ui/BottomNavBar.js';
 import ThemePopup from '/ui/ThemePopup.js';
 import BagPopup from '/ui/BagPopup.js';
+import CoinBar from '/ui/CoinBar.js';
 
 export default class InventoryScene extends Phaser.Scene {
   constructor() {
@@ -37,6 +38,7 @@ export default class InventoryScene extends Phaser.Scene {
     const uiStartY = 40;
 
     this.topButtonBar = new TopButtonBar(this, uiStartX, uiStartY);
+    this.coinBar = new CoinBar(this, uiStartX - 700, uiStartY + 25);
 
     this.collectionPopup = new CollectionPopup(this);
     this.collectionPopup.createPopup();
@@ -46,7 +48,7 @@ export default class InventoryScene extends Phaser.Scene {
     this.bagPopup = new BagPopup(this);
 
     // Bottom nav bar y-position you are using
-    const bottomNavY = 1200;
+    const bottomNavY = 1390;
 
     this.bottomNavBar = new BottomNavBar(
       this,
@@ -55,8 +57,8 @@ export default class InventoryScene extends Phaser.Scene {
     );
 
     // === Inventory Frame ===
-    const frameW = 550;
-    const frameH = 950;
+    const frameW = 700;
+    const frameH = 1160;
     const frameMarginAboveNav = 80;
 
     const frameY = bottomNavY - frameMarginAboveNav - frameH / 2;
@@ -72,12 +74,12 @@ export default class InventoryScene extends Phaser.Scene {
     const rows = 6;
 
     // Padding inside the frame (tweak to match your PNG margins)
-    const padLeft = 105;
-    const padTop = 100;
+    const padLeft = 130;
+    const padTop = 105;
 
     // Spacing between slots (tweak)
-    const gapX = 170;
-    const gapY = 150;
+    const gapX = 220;
+    const gapY = 190;
 
     // Top-left slot position (based on frame size)
     const gridStartX = frame.x - frame.displayWidth / 2 + padLeft;
@@ -96,14 +98,14 @@ export default class InventoryScene extends Phaser.Scene {
 
         const slot = this.add.image(x, y, slotKey)
           .setOrigin(0.5)
-          .setScale(1.8);
+          .setScale(2.4);
 
         this.invSlots.push(slot);
 
         if (isFirstSlot) {
           const icon = this.add.image(x, y, 'Char_Cake')
             .setOrigin(0.5)
-            .setDisplaySize(90, 90);
+            .setDisplaySize(140, 140);
 
           this.invSlotIcons.push(icon);
         }
