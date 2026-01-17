@@ -4,6 +4,7 @@ export default class SettingPopup {
     this.scene = scene;
     this.popup = null;
     // Default: sound/music enabled (status: 0=ON, 1=HALF, 2=OFF)
+    this.sfxVolume = 1.0;
     this.soundStatus = 0;
     this.musicStatus = 0;
     this.iconKeys = [
@@ -63,11 +64,7 @@ export default class SettingPopup {
 
       // 0: 100%, 1: 60%, 2: 30%, 3: mute
       const volumes = [1.0, 0.6, 0.3, 0.0];
-      const v = volumes[this.soundStatus];
-
-      // global SFX volume (all sounds)
-      this.scene.sound.setMute(v === 0);
-      this.scene.sound.setVolume(v);
+      this.scene.sfxVolume = volumes[this.soundStatus];
     });
 
     // MUSIC Control
