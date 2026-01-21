@@ -5,6 +5,7 @@ import BottomNavBar from '/ui/BottomNavBar.js';
 import PartTimeFrame from '/ui/PartTimeFrame.js';
 import HeartButton from '/ui/HeartButton.js';
 import LargeClickButton from '/ui/LargeClickButton.js';
+import CoinBar from '/ui/CoinBar.js';
 
 // bottom nav bar
 import CollectionPopup from '/ui/CollectionPopup.js';
@@ -28,31 +29,35 @@ export default class PartTimeScene extends Phaser.Scene {
 
     const cx = this.cameras.main.centerX;
     const cy = this.cameras.main.centerY;
+    const startX = cx- 240;
+    const startY = 40;
 
     this.cameras.main.setBackgroundColor('#ffffff');
 
     // === Top UI Bar ===
     new TopButtonBar(this, cx - 240, 40);
+    this.coinBar = new CoinBar(this, startX - 700, startY + 25);
 
     // === Three small boxes ===
-    let boxStartX = cx - 160;
+    let boxStartX = cx - 190;
     for (let i = 0; i < 3; i++) {
-      this.add.rectangle(boxStartX + i * 50, 150, 40, 40, 0xcccccc)
+      this.add.rectangle(boxStartX + i * 80, 180, 40, 40, 0xcccccc)
         .setStrokeStyle(2, 0x000000)
-        .setOrigin(0.5);
+        .setOrigin(0.5)
+        .setScale(1.5);
     }
 
     // === Part-time image inside frame ===
-    this.partTimeImage = this.add.sprite(cx, cy - 180, 'partTime_img')
+    this.partTimeImage = this.add.sprite(cx, cy - 80, 'partTime_img')
       .setOrigin(0.5)
-      .setScale(1.45);
+      .setScale(1.8);
 
     // === Heart in top-right of frame ===
     this.heart = new HeartButton(this, cx + 180, cy - 570);
 
     // === CLICK Button ===
-    this.largeBtn = this.add.sprite(cx, cy + 230, 'LargeClickButton')
-      .setOrigin(0.5).setScale(1.45)
+    this.largeBtn = this.add.sprite(cx, cy + 470, 'LargeClickButton')
+      .setOrigin(0.5).setScale(2)
       .setInteractive({ useHandCursor: true });
 
     this.largeBtn.on('pointerdown', () => {
@@ -78,7 +83,7 @@ export default class PartTimeScene extends Phaser.Scene {
     // === Bottom Navigation ===
     this.bottomNav = new BottomNavBar(
       this,
-      1100,
+      1390,
       this.onNavButtonClicked.bind(this)
     );
   }

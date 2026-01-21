@@ -4,6 +4,7 @@ export default class SettingPopup {
     this.scene = scene;
     this.popup = null;
     // Default: sound/music enabled (status: 0=ON, 1=HALF, 2=OFF)
+    this.sfxVolume = 1.0;
     this.soundStatus = 0;
     this.musicStatus = 0;
     this.iconKeys = [
@@ -60,7 +61,10 @@ export default class SettingPopup {
     this.soundBtn.on("pointerdown", () => {
       this.soundStatus = (this.soundStatus + 1) % 4;
       this.soundBtn.setTexture(this.iconKeys[0][this.soundStatus]);
-      // TODO: Optionally call your game sound function here
+
+      // 0: 100%, 1: 60%, 2: 30%, 3: mute
+      const volumes = [1.0, 0.6, 0.3, 0.0];
+      this.scene.sfxVolume = volumes[this.soundStatus];
     });
 
     // MUSIC Control
@@ -75,7 +79,21 @@ export default class SettingPopup {
     this.musicBtn.on("pointerdown", () => {
       this.musicStatus = (this.musicStatus + 1) % 4;
       this.musicBtn.setTexture(this.iconKeys[1][this.musicStatus]);
-      // TODO: Optionally call your game music function here
+
+      const bgm = this.scene.bgm;   // created in GameScene.create()
+
+      if (!bgm) return;
+
+      // 0: 100%, 1: 60%, 2: 30%, 3: mute
+      const volumes = [1.0, 0.6, 0.3, 0.0];
+      const v = volumes[this.musicStatus];
+
+      if (v === 0) {
+        bgm.setMute(true);
+      } else {
+        bgm.setMute(false);
+        bgm.setVolume(v);
+      }
     });
 
     // ---------- Invisible Insta hit area ----------
