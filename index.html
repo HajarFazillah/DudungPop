@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Gacha Game</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,  user-scalable=no" />
   <link rel="stylesheet" href="css/style.css" />
 
   <style>
@@ -37,6 +38,10 @@
     <span style="font-family:'DoveMayoBold';">.</span>
   </div>
 
-  <script type="module" src="js/main.js"></script>
+  <!-- Load Phaser first (CDN - works everywhere) -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+  <!-- Then your main.js (no type="module") -->
+  <script src="js/main.js"></script>
 </body>
+
 </html>
