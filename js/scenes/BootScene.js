@@ -24,7 +24,7 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('result_bg', 'assets/result_bg.png');
         //Characters
 
-        this.load.image('Char_Snow', 'assets/Char_Snow.png');
+        this.load.image('char_snow', 'assets/char_snow.png');
         this.load.image('char_angryStar', 'assets/char_angryStar.png');
         this.load.image('char_angryStar2', 'assets/char_angryStar2.png');
         this.load.image('char_doughnut', 'assets/char_doughnut.png');

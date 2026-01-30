@@ -29,14 +29,14 @@ export default class PartTimeScene extends Phaser.Scene {
 
     const cx = this.cameras.main.centerX;
     const cy = this.cameras.main.centerY;
-    const startX = cx- 240;
+    const startX = cx - 240;
     const startY = 40;
 
     this.cameras.main.setBackgroundColor('#ffffff');
 
     // === Top UI Bar ===
-    new TopButtonBar(this, cx - 240, 40);
-    this.coinBar = new CoinBar(this, startX - 700, startY + 25);
+    this.topButtonBar = new TopButtonBar(this, 0, 0);
+    this.coinBar = new CoinBar(this, 0, 0);
 
     // === Three small boxes ===
     let boxStartX = cx - 190;
@@ -81,9 +81,10 @@ export default class PartTimeScene extends Phaser.Scene {
     this.bagPopup = new BagPopup(this);
 
     // === Bottom Navigation ===
-    this.bottomNav = new BottomNavBar(
+    this.bottomNavBar = new BottomNavBar(
       this,
-      1390,
+      cam.centerX,
+      cam.height * 0.90,
       this.onNavButtonClicked.bind(this)
     );
   }

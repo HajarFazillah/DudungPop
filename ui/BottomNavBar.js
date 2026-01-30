@@ -1,91 +1,113 @@
+// ui/BottomNavBar.js
+// Container-based nav bar so you can reposition it responsively from GameScene.
+// Children positions are local to the container (0,0 is the container origin). [web:264][web:266]
+
+import * as Phaser from 'https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.esm.js';
+
 export default class BottomNavBar {
-  constructor(scene, navY = 1500, onButtonClicked = null) {
+  constructor(scene, x = 0, y = 0, onButtonClicked = null) {
     this.scene = scene;
-    this.navY = navY;
+    this.onButtonClicked = onButtonClicked;
+
+    // Layout config (tune)
     this.circleRadius = 55;
     this.circleGap = 30;
+    this.arrowOffset = 60;
+    this.arrowSize = 60;
+
     this.labels = ['장식장', '가방', '상점', '도감'];
-    this.n = this.labels.length;
-    this.onButtonClicked = onButtonClicked;
+    this.buttonImages = ['navbar_theme', 'navbar_bag', 'navbar_store', 'navbar_collection'];
+
+    // Scene cycle
     this.mainScenes = ['GameScene', 'PartTimeScene', 'InventoryScene'];
-    this.createBottomNavBar();
+
+    // Root container (move this on resize)
+    this.container = scene.add.container(x, y);
+
+    // Hold references so we can destroy safely
+    this.leftArrow = null;
+    this.rightArrow = null;
+    this.buttons = [];
+
+    this.create();
   }
 
-  createBottomNavBar() {
+  // Public API for GameScene
+  setPosition(x, y) {
+    this.container.setPosition(x, y); // setPosition is standard Transform component [web:269]
+  }
 
-    const buttonImages = [
-      'navbar_theme',
-      'navbar_bag',
-      'navbar_store',
-      'navbar_collection'
-    ];
+  setScale(s) {
+    this.container.setScale(s);
+  }
 
-    const totalWidth = this.n * (this.circleRadius * 2) + (this.n - 1) * this.circleGap;
-    const centerXNav = this.scene.cameras.main.centerX;
-    const startXNav = centerXNav - totalWidth / 2 + this.circleRadius;
-    const navY = this.navY;
-    const arrowOffset = 60;
+  destroy() {
+    this.container.destroy(true);
+  }
 
-    const leftArrow = this.scene.add.image(
-      startXNav - this.circleRadius - arrowOffset,
-      navY,
+  create() {
+    // Clear if recreate
+    this.container.removeAll(true);
+    this.buttons.length = 0;
+
+    const n = this.labels.length;
+    const totalButtonsWidth = n * (this.circleRadius * 2) + (n - 1) * this.circleGap;
+
+    // Local-space layout: center buttons around x=0
+    const startX = -totalButtonsWidth / 2 + this.circleRadius;
+
+    // Left arrow (local)
+    this.leftArrow = this.scene.add.image(
+      startX - this.circleRadius - this.arrowOffset,
+      0,
       'navbar_left'
     )
-      .setDisplaySize(60, 60)
+      .setDisplaySize(this.arrowSize, this.arrowSize)
       .setInteractive({ useHandCursor: true });
 
-    // === NAV BUTTONS (image-based) ===
-    this.labels.forEach((label, i) => {
-      const x = startXNav + i * (this.circleRadius * 2 + this.circleGap);
+    this.container.add(this.leftArrow);
 
-      const btn = this.scene.add.image(
-        x,
-        navY,
-        buttonImages[i]
-      )
+    // Buttons (local)
+    this.labels.forEach((label, i) => {
+      const x = startX + i * (this.circleRadius * 2 + this.circleGap);
+
+      const btn = this.scene.add.image(x, 0, this.buttonImages[i])
         .setDisplaySize(this.circleRadius * 2, this.circleRadius * 2)
         .setInteractive({ useHandCursor: true });
 
       btn.on('pointerdown', () => {
-        console.log(label + ' 버튼이 클릭되었습니다.');
-        if (this.onButtonClicked) {
-          this.onButtonClicked(label);
-        }
+        if (this.onButtonClicked) this.onButtonClicked(label);
       });
+
+      this.buttons.push(btn);
+      this.container.add(btn);
     });
 
-    // === RIGHT ARROW (image) ===
-    const rightArrow = this.scene.add.image(
-      startXNav +
-      (this.n - 1) * (this.circleRadius * 2 + this.circleGap) +
-      this.circleRadius +
-      arrowOffset,
-      navY,
+    // Right arrow (local)
+    const lastX = startX + (n - 1) * (this.circleRadius * 2 + this.circleGap);
+
+    this.rightArrow = this.scene.add.image(
+      lastX + this.circleRadius + this.arrowOffset,
+      0,
       'navbar_right'
     )
-      .setDisplaySize(60, 60)
+      .setDisplaySize(this.arrowSize, this.arrowSize)
       .setInteractive({ useHandCursor: true });
 
-    // === PAGE NAVIGATION LOGIC ===
+    this.container.add(this.rightArrow);
+
+    // Page navigation logic (same as your original)
     const currentSceneKey = this.scene.scene.key;
     const currentIndex = this.mainScenes.indexOf(currentSceneKey);
 
-    // Left arrow → previous scene
-    leftArrow.on('pointerdown', () => {
-      const prevIndex =
-        (currentIndex - 1 + this.mainScenes.length) %
-        this.mainScenes.length;
-      const targetScene = this.mainScenes[prevIndex];
-      this.scene.scene.start(targetScene);
+    this.leftArrow.on('pointerdown', () => {
+      const prevIndex = (currentIndex - 1 + this.mainScenes.length) % this.mainScenes.length;
+      this.scene.scene.start(this.mainScenes[prevIndex]);
     });
 
-    // Right arrow → next scene
-    rightArrow.on('pointerdown', () => {
-      const nextIndex =
-        (currentIndex + 1) %
-        this.mainScenes.length;
-      const targetScene = this.mainScenes[nextIndex];
-      this.scene.scene.start(targetScene);
+    this.rightArrow.on('pointerdown', () => {
+      const nextIndex = (currentIndex + 1) % this.mainScenes.length;
+      this.scene.scene.start(this.mainScenes[nextIndex]);
     });
   }
 }

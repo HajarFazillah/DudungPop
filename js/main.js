@@ -14,7 +14,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     parent: 'game-container',
     width: 720,    // example value
-    height: 1820  // matches your coordinate system               
+    height: 1600  // matches your coordinate system               
   },
   scene: [BootScene, StartScene, GameScene, PartTimeScene, CollectionPopup, InventoryScene]
 };

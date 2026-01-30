@@ -20,7 +20,7 @@ export default class InventoryScene extends Phaser.Scene {
 
     // Optional (keep only if you will use them later in this scene)
     this.load.image('Char_Cake', 'assets/char_pancake.png');
-    this.load.image('Char_Snow', 'assets/Char_Snow.png');
+    this.load.image('char_snow', 'assets/char_snow.png');
     this.load.image('Char_Cat', 'assets/char_blackCat.png');
     this.load.image('Char_Happy', 'assets/char_happyStar.png');
   }
@@ -50,9 +50,12 @@ export default class InventoryScene extends Phaser.Scene {
     // Bottom nav bar y-position you are using
     const bottomNavY = 1390;
 
+    const cam = this.cameras.main;
+
     this.bottomNavBar = new BottomNavBar(
       this,
-      bottomNavY,
+      cam.centerX,
+      cam.height * 0.90,
       this.onNavButtonClicked.bind(this)
     );
 
