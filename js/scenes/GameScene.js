@@ -105,7 +105,7 @@ export default class GameScene extends Phaser.Scene {
     if (this.bottomNavBar) this.bottomNavBar.setPosition(cam.centerX, h * 0.90);
 
     // Lever block
-    if (this.Lever) this.Lever.setPosition(cam.centerX, h * 0.60);
+    if (this.Lever) this.Lever.setPosition(cam.centerX, h * 0.70);
 
     // Progress bar
     const barY = h * 0.82;
