@@ -108,7 +108,7 @@ export default class Lever {
     this.rightLeverImg.on('pointerdown', () => this.handleRightLeverClick());
 
     // Skip Animation Checkbox (local)
-    const checkboxY = 230;
+    const checkboxY = 405;
 
     this.checkboxRect = this.scene.add.rectangle(-65, checkboxY, 24, 24, 0xffffff)
       .setStrokeStyle(1, 0x222222)
