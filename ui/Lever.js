@@ -108,19 +108,19 @@ export default class Lever {
     this.rightLeverImg.on('pointerdown', () => this.handleRightLeverClick());
 
     // Skip Animation Checkbox (local)
-    const checkboxY = 405;
+    const checkboxY = -80;
 
-    this.checkboxRect = this.scene.add.rectangle(-65, checkboxY, 24, 24, 0xffffff)
+    this.checkboxRect = this.scene.add.rectangle(-45, checkboxY, 24, 24, 0xffffff)
       .setStrokeStyle(1, 0x222222)
       .setInteractive({ useHandCursor: true });
 
-    this.checkmark = this.scene.add.text(-65, checkboxY, '✓', {
+    this.checkmark = this.scene.add.text(-45, checkboxY, '✓', {
       fontSize: '20px',
       color: '#000',
       fontStyle: 'bold'
     }).setOrigin(0.5).setVisible(false);
 
-    this.checkboxLabel = this.scene.add.text(-40, checkboxY, '연출 건너뛰기', {
+    this.checkboxLabel = this.scene.add.text(-25, checkboxY, '연출 건너뛰기', {
       fontSize: '25px',
       fontFamily: 'DoveMayo',
       color: '#222'

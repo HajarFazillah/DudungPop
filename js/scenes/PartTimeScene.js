@@ -27,21 +27,27 @@ export default class PartTimeScene extends Phaser.Scene {
   create() {
     console.log("Loaded:", this.scene.key);
 
-    const cx = this.cameras.main.centerX;
-    const cy = this.cameras.main.centerY;
-    const startX = cx - 240;
-    const startY = 40;
+    const cam = this.cameras.main;
+    const w = cam.width;
+    const h = cam.height;
+    const cx = cam.centerX;
+    const cy = cam.centerY;
 
-    this.cameras.main.setBackgroundColor('#ffffff');
+    cam.setBackgroundColor('#ffffff');
 
-    // === Top UI Bar ===
     this.topButtonBar = new TopButtonBar(this, 0, 0);
     this.coinBar = new CoinBar(this, 0, 0);
+
+    const marginRight = 40;
+    const marginTop = h * 0.07;
+
+    this.topButtonBar.setRightTop(w - marginRight, marginTop);
+    this.coinBar.setPosition(cam.centerX - w * 0.45, marginTop);
 
     // === Three small boxes ===
     let boxStartX = cx - 190;
     for (let i = 0; i < 3; i++) {
-      this.add.rectangle(boxStartX + i * 80, 180, 40, 40, 0xcccccc)
+      this.add.rectangle(boxStartX + i * 80, 250, 40, 40, 0xcccccc)
         .setStrokeStyle(2, 0x000000)
         .setOrigin(0.5)
         .setScale(1.5);
