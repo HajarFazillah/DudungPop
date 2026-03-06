@@ -34,11 +34,24 @@ export default class InventoryScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#ffffff');
 
     // === UI Components ===
-    const uiStartX = cx - 240;
+    /*const uiStartX = cx - 240;
     const uiStartY = 40;
 
     this.topButtonBar = new TopButtonBar(this, uiStartX, uiStartY);
-    this.coinBar = new CoinBar(this, uiStartX - 700, uiStartY + 25);
+    this.coinBar = new CoinBar(this, uiStartX - 700, uiStartY + 25);*/
+
+    const cam = this.cameras.main;
+    const w = cam.width;
+    const h = cam.height;
+
+    this.topButtonBar = new TopButtonBar(this, 0, 0);
+    this.coinBar = new CoinBar(this, 0, 0);
+
+    const marginRight = 40;
+    const marginTop = h * 0.07;
+
+    this.topButtonBar.setRightTop(w - marginRight, marginTop);
+    this.coinBar.setPosition(cam.centerX - w * 0.45, marginTop);
 
     this.collectionPopup = new CollectionPopup(this);
     this.collectionPopup.createPopup();
@@ -50,8 +63,6 @@ export default class InventoryScene extends Phaser.Scene {
     // Bottom nav bar y-position you are using
     const bottomNavY = 1390;
 
-    const cam = this.cameras.main;
-
     this.bottomNavBar = new BottomNavBar(
       this,
       cam.centerX,
@@ -62,7 +73,7 @@ export default class InventoryScene extends Phaser.Scene {
     // === Inventory Frame ===
     const frameW = 700;
     const frameH = 1160;
-    const frameMarginAboveNav = 80;
+    const frameMarginAboveNav = 70;
 
     const frameY = bottomNavY - frameMarginAboveNav - frameH / 2;
 

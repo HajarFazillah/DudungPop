@@ -50,7 +50,7 @@ export default class GameScene extends Phaser.Scene {
     );
     this.categoryGroup.activateDefault();
 
-    this.bottomNavBar = new BottomNavBar(this,cam.centerX, cam.height * 0.90, this.onNavButtonClicked.bind(this));
+    this.bottomNavBar = new BottomNavBar(this, cam.centerX, cam.height * 0.90, this.onNavButtonClicked.bind(this));
 
     this.Lever = new Lever(this, 0, 0);
     this.Lever.createLever();
@@ -93,13 +93,17 @@ export default class GameScene extends Phaser.Scene {
     }
 
     // Top bar
-    if (this.topButtonBar) this.topButtonBar.setPosition(cam.centerX, h * 0.06);
+    if (this.topButtonBar) {
+      const marginRight = 40;
+      const marginTop = h * 0.07;
+      this.topButtonBar.setRightTop(w - marginRight, marginTop);
+    } 
 
     // Coin bar
-    if (this.coinBar) this.coinBar.setPosition(cam.centerX - w * 0.45, h * 0.08);
+    if (this.coinBar) this.coinBar.setPosition(cam.centerX - w * 0.45, h * 0.07);
 
     // Category buttons
-    if (this.categoryGroup) this.categoryGroup.setPosition(cam.centerX, h * 0.14);
+    if (this.categoryGroup) this.categoryGroup.setPosition(cam.centerX, h * 0.16);
 
     // Bottom nav
     if (this.bottomNavBar) this.bottomNavBar.setPosition(cam.centerX, h * 0.90);

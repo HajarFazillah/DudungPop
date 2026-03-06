@@ -9,8 +9,8 @@ export default class CoinBar {
     this.container = scene.add.container(x, y);
 
     // --- Visual config (same feel as your current offsets) ---
-    this.bgScale = 1.2;
-    this.iconScale = 0.7;
+    this.bgScale = 1;
+    this.iconScale = 0.5;
 
     // Background image (anchor left)
     this.bg = scene.add.image(0, 0, 'coin_bar')

@@ -11,9 +11,9 @@ export default class TopButtonBar {
     this.scene = scene;
 
     // Layout config (tune as needed)
-    this.buttonGap = 34;
-    this.buttonWidth = 60;
-    this.iconScale = 0.7;
+    this.buttonGap = 20;
+    this.buttonWidth = 42;
+    this.iconScale = 0.6;
 
     this.buttonLabels = ['퀘스트', '메일', '설정', '공지'];
     this.buttonImageKeys = {
@@ -45,10 +45,17 @@ export default class TopButtonBar {
     scene.scale.on(Phaser.Scale.Events.RESIZE, this.onResize, this); // resize event exists in Scale Manager [web:270]
   }
 
-  // Public API: let GameScene anchor it (cam.centerX, cam.height * 0.06, etc.)
-  setPosition(x, y) {
-    this.container.setPosition(x, y); // Containers use setPosition like any game object [web:269]
+  setRightTop(xRight, yTop) {
+    // Container default origin is (0,0) at its center, so shift by half width
+    const bounds = this.buttonsGroup.getBounds();
+    const halfWidth = bounds.width / 2;
+    this.container.setPosition(xRight - halfWidth, yTop);
   }
+
+  // Public API: let GameScene anchor it (cam.centerX, cam.height * 0.06, etc.)
+  /*setPosition(x, y) {
+    this.container.setPosition(x, y); // Containers use setPosition like any game object [web:269]
+  }*/
 
   // Optional: scale whole bar (if you want smaller icons on small screens)
   setScale(s) {
