@@ -160,7 +160,7 @@ export default class GameScene extends Phaser.Scene {
     if (!this.gachaBg) return;
 
     if (label === 'cat1') this.gachaBg.setTexture('game_default');
-    else if (label === 'cat2') this.gachaBg.setTexture('game_default2');
+    else if (label === 'cat2') this.gachaBg.setTexture('game_default1');
   }
 
   onNavButtonClicked(label) {
